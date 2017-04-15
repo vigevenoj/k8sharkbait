@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kanboard-ingress
+  #  annotations:
+  #    traefik.frontend.rule.type: pathprefixstrip
+spec:
+  rules:
+  - host: kanboard.sharkbaitextraordinaire.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kanboard-service
+          servicePort: http

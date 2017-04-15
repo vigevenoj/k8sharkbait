@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubernetes.io/created-by: |
+      {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicaSet","namespace":"default","name":"kanboard-2664185235","uid":"821b8500-2199-11e7-af9c-080027841e4f","apiVersion":"extensions","resourceVersion":"23942"}}
+  creationTimestamp: 2017-04-15T05:08:05Z
+  generateName: kanboard-2664185235-
+  labels:
+    app: kanboard
+    pod-template-hash: "2664185235"
+    version: stable
+  name: kanboard-2664185235-g092b
+  namespace: default
+  ownerReferences:
+  - apiVersion: extensions/v1beta1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: kanboard-2664185235
+    uid: 821b8500-2199-11e7-af9c-080027841e4f
+  resourceVersion: "23981"
+  selfLink: /api/v1/namespaces/default/pods/kanboard-2664185235-g092b
+  uid: 821e0618-2199-11e7-af9c-080027841e4f
+spec:
+  containers:
+  - image: kanboard/kanboard:stable
+    imagePullPolicy: IfNotPresent
+    name: kanboard
+    resources: {}
+    securityContext:
+      privileged: false
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-01r1k
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  nodeName: minikube
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - name: default-token-01r1k
+    secret:
+      defaultMode: 420
+      secretName: default-token-01r1k
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: 2017-04-15T05:08:05Z
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: 2017-04-15T05:08:17Z
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: 2017-04-15T05:08:05Z
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://9570302b7df9f13b6a0387dc25fdb03e7b495bb54199e6788af76f188391990d
+    image: kanboard/kanboard:stable
+    imageID: docker://sha256:3e21ef70d004e33c9a86ceee8a10b4c1395281812f6411178a40cfad786c6648
+    lastState: {}
+    name: kanboard
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: 2017-04-15T05:08:17Z
+  hostIP: 192.168.99.100
+  phase: Running
+  podIP: 172.17.0.15
+  qosClass: BestEffort
+  startTime: 2017-04-15T05:08:05Z
