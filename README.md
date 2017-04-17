@@ -20,23 +20,31 @@ They are backed by a postgres database and ingress is configured and tracked via
    `kubectl apply -f traefik-ingress-controller_deployment.yaml`
 * Deploy Traefik ui service
 
-   `kubectl apply -f traefik-ui_service.yaml`
+   `kubectl apply -f traefik-ui_service.yaml`  
 * Deploy kanboard. The configuration is missing the database information
 
-   `kubectl apply -f kanboard-deployment.yaml`
-   `kubectl apply -f kanboard-service.yaml`
+   `kubectl apply -f kanboard-deployment.yaml`  
+   `kubectl apply -f kanboard-service.yaml`  
 * Configure an ingress through Traefik to Kanboard:
 
    `kubectl apply -f kanboard-ingress.yaml`
 * Configure Huginn
 
-   We use the [single-process](https://github.com/cantino/huginn/tree/master/docker/single-process) docker image and configuration but pass in additional configuration as environment variables to specify the local postgresql database.
-   `kubectl apply -f huginn-threaded-deployment.yaml`
-   `kubectl apply -f huginn-threaded-service.yaml`
-   `kubectl apply -f huginn-web-deployment.yaml`
-   `kubectl apply -f huginn-web-service.yaml`
+   We use the [single-process](https://github.com/cantino/huginn/tree/master/docker/single-process) docker image and configuration but pass in additional configuration as environment variables to specify the local postgresql database.  
+   `kubectl apply -f huginn-threaded-deployment.yaml`  
+   `kubectl apply -f huginn-threaded-service.yaml`  
+   `kubectl apply -f huginn-web-deployment.yaml`  
+   `kubectl apply -f huginn-web-service.yaml`  
 * Configure an ingress through Traefik to Huginn:
 
-   `kubectl apply -f huginn-web-ingress.yaml`
+   `kubectl apply -f huginn-web-ingress.yaml`  
 
 At this point Kanboard, Huginn's web interface, and Huginn's background task processing should be running in the cluster, and the web interfaces for Kanboard and Huginn should be available at the urls specified in the ingress configurations.
+
+# Future work
+in no particular order
+* Add inbound/outbound SMTP
+* influxdb
+* grafana
+* let's encrypt certificates for the ingresses
+* secure configuration parameters
