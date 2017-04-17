@@ -48,3 +48,5 @@ in no particular order
 * grafana
 * let's encrypt certificates for the ingresses
 * secure configuration parameters
+* mqtt
+* owntracks
