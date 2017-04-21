@@ -51,7 +51,7 @@ spec:
         - name: POSTGRES_PORT_5432_TCP_PORT
           value: "5432"
         image: cantino/huginn-single-process
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: huginn-web
         ports:
         - containerPort: 3000
