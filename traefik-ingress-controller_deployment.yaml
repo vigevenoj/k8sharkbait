@@ -4,6 +4,7 @@ metadata:
   labels:
     k8s-app: traefik-ingress-lb
   name: traefik-ingress-controller
+  namespace: kube-system
 spec:
   replicas: 1
   selector:
