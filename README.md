@@ -25,7 +25,7 @@ They are backed by a postgres database and ingress is configured and tracked via
 
    Our deployment uses a secret mounted in a volume for configuration to connect to the database
 
-   `kubectl apply -f kanboard-config-secret.yaml`
+   `kubectl apply -f kanboard-config-secret.yaml` 
    `kubectl apply -f kanboard-deployment.yaml`  
    `kubectl apply -f kanboard-service.yaml`  
 ## Configure an ingress through Traefik to Kanboard:
