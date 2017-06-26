@@ -25,4 +25,4 @@ spec:
       - path: /
         backend:
           serviceName: traefik-web-ui
-          servicePort: web
+          servicePort: 80

@@ -1,3 +1,10 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-ingress-controller
+  namespace: kube-system
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -22,6 +29,7 @@ spec:
         k8s-app: traefik-ingress-lb
         name: traefik-ingress-lb
     spec:
+      serviceAccountName: traefik-ingress-controller
       containers:
       - args:
         - -d
