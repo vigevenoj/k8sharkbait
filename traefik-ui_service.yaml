@@ -17,9 +17,12 @@ kind: Ingress
 metadata:
   name: traefik-web-ui
   namespace: kube-system
+  annotations:
+    ingress.kubernetes.io/auth-type: basic
+    ingress.kubernetes.io/auth-secret: traefik-basic-auth
 spec:
   rules:
-  - host: traefik-ui.local
+  - host: traefik.xn--9q8h2cq1m.ws
     http:
       paths:
       - path: /

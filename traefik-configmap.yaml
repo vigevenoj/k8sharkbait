@@ -1,0 +1,27 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: traefik-cfg
+  namespace: kube-system
+data:
+  traefik.toml: |
+    # traefik.toml
+    defaultEntryPoints = ["http","https"]
+    [entryPoints]
+      [entryPoints.http]
+      address = ":80"
+      [entryPoints.http.redirect]
+      entryPoint = "https"
+      [entryPoints.https]
+      address = ":443"
+      [entryPoints.https.tls]
+    [acme]
+    email = "vigevenoj@gmail.com"
+    storage = "/etc/traefik/acme.json"
+    dnsProvider = "linode"
+    entryPoint = "https"
+    onDemand = true
+    onHostRule = true
+    caServer = "https://acme-v01.api.letsencrypt.org/directory"
+    [[acme.domains]]
+    main = "xn--9q8h2cq1m.ws"

@@ -1,0 +1,14 @@
+# This is a persistent volume claim for traefik's storage
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: traefik-claim
+  namespace: kube-system
+  annotations:
+    volume.beta.kubernetes.io/storage-class: glusterfs-storage
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
