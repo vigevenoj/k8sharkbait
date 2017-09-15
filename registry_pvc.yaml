@@ -1,0 +1,16 @@
+# Volume claim for our private registry
+# If 5GiB isn't enough, we should probably pay for AWS ECR
+# at $0.10 per gb-month, that'd be $0.50/month
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry-image-storage
+  namespace: kube-system
+  annotations:
+    volume.beta.kubernetes.io/storage-class: glusterfs-storage
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
