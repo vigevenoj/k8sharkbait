@@ -1,0 +1,35 @@
+# Undocumented requirements:
+# - "whatcolorischristinashair" docker image available to cluster nodes
+# See haircolor-ingress.yaml for additional notes
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: haircolor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: whatcolorischristinashair
+    spec:
+      containers:
+      - name: whatcolorischristinashair
+        # This image is private and has been pre-pushed to the nodes
+        image: whatcolorischristinashair
+        imagePullPolicy: Never # future work: change to IfNotPresent
+        ports:
+          - name: http-port
+            containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: haircolor
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: whatcolorischristinashair

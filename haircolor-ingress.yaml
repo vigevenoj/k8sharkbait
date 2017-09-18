@@ -1,0 +1,16 @@
+# This ingress requires DNS for "whatcolorischristinashair.com" to resolve to
+# a host in our cluster.
+# See haircolor.yaml for additional notes about this application
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: haircolor-ingress
+spec:
+  rules:
+  - host: whatcolorischristinashair.com
+    http:
+      paths:
+      - path: /
+        backend: 
+          serviceName: haircolor
+          servicePort: http
