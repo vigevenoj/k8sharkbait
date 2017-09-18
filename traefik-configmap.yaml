@@ -15,13 +15,21 @@ data:
       [entryPoints.https]
       address = ":443"
       [entryPoints.https.tls]
+    [web]
+    [web.statistics]
+      RecentErrors = 10
     [acme]
     email = "vigevenoj@gmail.com"
     storage = "/etc/traefik/acme.json"
-    dnsProvider = "linode"
+    #dnsProvider = "linode"
     entryPoint = "https"
-    onDemand = true
+    acmeLogging = true
+    onDemand = false
     onHostRule = true
+    # Use the staging env until it's all working
+    #caServer = "https://acme-staging.api.letsencrypt.org/directory"
     caServer = "https://acme-v01.api.letsencrypt.org/directory"
     [[acme.domains]]
     main = "xn--9q8h2cq1m.ws"
+    [[acme.domains]]
+    main = "whatcolorischristinashair.com"
