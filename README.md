@@ -20,13 +20,13 @@ They are backed by a postgres database and ingress is configured and tracked via
    `helm install stable/postgresql`
 ## Deploy Traefik
 
-   First, update the ConfigMap in traefik-configmap.yaml to include the domains you plan on managing via Traefik, as SSL is obtained via Let's Encrypt.
-   Next, ensure that a persistent volume claim exists for Traefik to store its certificate information by applying the traefik-pvc.yaml:
-   `kubectl apply -f traefik-pvc.yaml`
-   Then apply the ConfigMap you updated previously
-   `kubectl apply -f traefik-configmap.yaml`
-   ensure that Traefik has the necessary roles assigned,
-   `kubectl apply -f traefik-rbac.yaml`
+   First, update the ConfigMap in traefik-configmap.yaml to include the domains you plan on managing via Traefik, as SSL is obtained via Let's Encrypt.  
+   Next, ensure that a persistent volume claim exists for Traefik to store its certificate information by applying the traefik-pvc.yaml:  
+   `kubectl apply -f traefik-pvc.yaml`  
+   Then apply the ConfigMap you updated previously  
+   `kubectl apply -f traefik-configmap.yaml`  
+   ensure that Traefik has the necessary roles assigned,  
+   `kubectl apply -f traefik-rbac.yaml`  
 
    Create a deployment for the controller:
    `kubectl apply -f traefik-ingress-controller_deployment.yaml`
@@ -58,13 +58,13 @@ At this point Kanboard, Huginn's web interface, and Huginn's background task pro
 
 ## Deploy whatcolorischristinashair
 
-   This is a privately-published image that is side-loaded onto the cluster nodes. The deployment and service are managed via haircolor.yaml and a Traefik ingress is managed via haircolor-ingress.yaml
+   This is a privately-published image that is side-loaded onto the cluster nodes. The deployment and service are managed via haircolor.yaml and a Traefik ingress is managed via haircolor-ingress.yaml  
 
-   `kubectl apply -f haircolor.yaml`
-   `kubectl apply -f haircolor-ingress.yaml`
+   `kubectl apply -f haircolor.yaml`  
+   `kubectl apply -f haircolor-ingress.yaml`  
 
 ### Updating whatcolorischristinashair
-   This probably doesn't affect anybody but me since I'm building this image and side-loading it into the cluster, but when the site needs an update, the following steps need to happen:
+   This probably doesn't affect anybody but me since I'm building this image and side-loading it into the cluster, but when the site needs an update, the following steps need to happen:  
    1. Build the docker image with `docker build`
    2. Save the image locally with `docker save`
    3. scp the image to the cluster nodes
