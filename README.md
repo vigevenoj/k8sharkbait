@@ -14,10 +14,19 @@ They are backed by a postgres database and ingress is configured and tracked via
   * `helm init`
 3. A deployed StorageClass that can be used to create persistent volume claims.
 
+# Preflight
+This section covers internal setup and tooling not currently pushed to the public repo and is mostly ignorable notes 
+## Storage
+Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight; it has bugs and needs some human intervention. The internal tooling also generates the necessary topology.json required for Heketi to use the volumes for glusterfs.
+Once the cluster is boostrapped and Kubernetes is running, the gk-deploy.sh script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi) must be deployed onto a node in the cluster so that they can be run from there. Running gk-deploy.sh from outside the cluster fails, see [gluster/gluseterkubernetes issue #161](https://github.com/gluster/gluster-kubernetes/issues/161) for details.
+
+Once storage is online, create a StorageClass to fulfill prerequisite #3. [storageclass.yaml](storageclass.yaml) will work for this.
+
 # Deployment
 ## Deploy postgresql with helm:
 
-   `helm install stable/postgresql`
+   `helm install --name spooky-metal stable/postgresql`
+
 ## Deploy Traefik
 
    First, update the ConfigMap in traefik-configmap.yaml to include the domains you plan on managing via Traefik, as SSL is obtained via Let's Encrypt.  
