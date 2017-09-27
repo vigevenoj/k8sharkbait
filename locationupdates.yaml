@@ -1,0 +1,100 @@
+# This configures a deployment of a docker image built from 
+# https://github.com/vigevenoj/owntracks-to-db/tree/master/python
+# where the image has been pre-pushed to the cluster nodes
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: owntracks2db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: owntracks2db
+    spec:
+      containers:
+      - name: owntracks2db
+        # This image is private and has been pre-pushed to the nodes
+        image: owntracks2db
+        imagePullPolicy: Never
+        ports:
+          - name: monitoring
+            containerPort: 8000
+        volumeMounts:
+          - name: ca-certificate
+            mountPath: /owntracks2db/certificates
+            readOnly: true
+          # Mount a ConfigMap as a blank 
+          - name: owntracks2db-config
+            mountPath: /owntracks2db/config
+        # Use secret->environment variables
+        env: 
+          - name: OWNTRACKS2DB_MQTT_HOST
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-mqtt-host 
+          - name: OWNTRACKS2DB_MQTT_PORT
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-mqtt-port
+          - name: OWNTRACKS2DB_MQTT_SSL
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-mqtt-ssl
+          - name: OWNTRACKS2DB_MQTT_CA
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-mqtt-ca
+          - name: OWNTRACKS2DB_MQTT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-mqtt-username
+          - name: OWNTRACKS2DB_MQTT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-mqtt-password
+          - name: OWNTRACKS2DB_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-db-host
+          - name: OWNTRACKS2DB_DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-db-port
+          - name: OWNTRACKS2DB_DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-db-username
+          - name: OWNTRACKS2DB_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-db-password
+          - name: OWNTRACKS2DB_DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: locationupdates-configuration
+                key: owntracks2db-db-name
+      # Mount certificate from secret
+      volumes:
+        - name: ca-certificate
+          secret:
+            secretName: locationupdates-ca-certificate
+            items:
+              - key: mqtt_ca.crt
+                path: ca.crt
+        - name: owntracks2db-config
+          configMap:
+            name: owntracks2db-blank-config
+
+
