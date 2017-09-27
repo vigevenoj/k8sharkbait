@@ -31,25 +31,54 @@ spec:
       containers:
       - env:
         - name: DATABASE_ADAPTER
-          value: postgresql
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: database-adapter
         - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: database-name
           value: huginn
         - name: DATABASE_PASSWORD
-          value: DV0w3d5GTJ
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: database-password
         - name: DATABASE_USERNAME
-          value: postgres
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: database-username
         - name: DATABASE_HOST
-          value: sappy-pike-postgresql.default.svc.cluster.local
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: database-host
         - name: DATABASE_PORT
-          value: "5432"
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: database-port
         - name: DATABASE_ENCODING
+          # This isn't secret
           value: utf8
-        - name: APP_SECRET_TOKEN
-          value: 3bd139f9186b31a85336bb89cd1a1337078921134b2f48e022fd09c234d764d3e19b018b2ab789c6e0e04a1ac9e3365116368049660234c2038dc9990513d49c
-        - name: POSTGRES_PORT_5432_TCP_ADDR
-          value: sappy-pike-postgresql.default.svc.cluster.local
         - name: POSTGRES_PORT_5432_TCP_PORT
-          value: "5432"
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: postgres-port-tcp-port
+        - name: POSTGRES_PORT_5432_TCP_ADDR
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: postgres-port-tcp-addr
+        - name: APP_SECRET_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: huginn-configuration
+              key: app-secret-token
         image: cantino/huginn-single-process
         imagePullPolicy: IfNotPresent
         name: huginn-web
