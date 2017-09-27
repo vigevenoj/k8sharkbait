@@ -25,10 +25,10 @@ spec:
           - name: ca-certificate
             mountPath: /owntracks2db/certificates
             readOnly: true
-          # Mount a ConfigMap as a blank 
+          # Mount a ConfigMap as a configuration file 
           - name: owntracks2db-config
             mountPath: /owntracks2db/config
-        # Use secret->environment variables
+        # Use secret contents as environment variables
         env: 
           - name: OWNTRACKS2DB_MQTT_HOST
             valueFrom:
@@ -85,16 +85,38 @@ spec:
               secretKeyRef:
                 name: locationupdates-configuration
                 key: owntracks2db-db-name
-      # Mount certificate from secret
       volumes:
+        # Mount certificate from secret
         - name: ca-certificate
           secret:
             secretName: locationupdates-ca-certificate
             items:
               - key: mqtt_ca.crt
                 path: ca.crt
+        # Mount a configuration file from a ConfigMap
         - name: owntracks2db-config
           configMap:
             name: owntracks2db-blank-config
 
+# This is an example of the secret required for this deployment:
+#---
+#kind: Secret
+#apiVersion: v1
+#metadata:
+#  name: owntracks2db-configuration
+#  namespace: default
+#type: Opaque
+#data:
+#  owntracks2db-mqtt-host: 
+#  owntracks2db-mqtt-port:
+#  owntracks2db-mqtt-ssl:
+#  # owntracks2db-mqtt-ca is a path; use another secret to be mounted at /owntracks2db/certificates/ca.crt
+#  owntracks2db-mqtt-ca:
+#  owntracks2db-mqtt-username:
+#  owntracks2db-mqtt-password:
+#  owntracks2db-db-host:
+#  owntracks2db-db-port:
+#  owntracks2db-db-username:
+#  owntracks2db-db-password:
+#  owntracks2db-db-name:
 
