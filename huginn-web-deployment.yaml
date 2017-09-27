@@ -79,7 +79,7 @@ spec:
             secretKeyRef:
               name: huginn-configuration
               key: app-secret-token
-        image: cantino/huginn-single-process
+        image: huginn/huginn-single-process
         imagePullPolicy: IfNotPresent
         name: huginn-web
         ports:
