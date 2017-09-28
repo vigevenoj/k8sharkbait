@@ -15,7 +15,6 @@ They are backed by a postgres database and ingress is configured and tracked via
 3. A deployed StorageClass that can be used to create persistent volume claims.
 
 # Preflight
-This section covers internal setup and tooling not currently pushed to the public repo and is mostly ignorable notes 
 You'll need a Linode account and a valid API token in addition to some other details in a configuration file that you should not check into source control. An example config.yaml:
 ```
 linode:
