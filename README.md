@@ -16,6 +16,30 @@ They are backed by a postgres database and ingress is configured and tracked via
 
 # Preflight
 This section covers internal setup and tooling not currently pushed to the public repo and is mostly ignorable notes 
+You'll need a Linode account and a valid API token in addition to some other details in a configuration file that you should not check into source control. An example config.yaml:
+```
+linode:
+  token: 
+  # Use this to group all of the VMs used for your cluster
+  group: fancy-birdbath
+  # This currently depends on being in Newark for volumes, so 'us-east-1a' is required
+  region: us-east-1a
+  # g5-standard-1 is 2048mb ram/1vcpu, $10/month
+  # g5-nanode-1 is 1024mb ram/1vcpu, $5/month
+  type: g5-standard-1
+  distro: linode/ubuntu17.04
+  root_pass: 
+  root_ssh_key: 
+
+# Put your kubernetes cluster information here, we'll use it later
+cluster:
+  # This is the number of nodes in the cluster, total (including master)
+  nodes: 3
+  # The cluster requires a domain that has DNS configured via Linode
+  domain: example.com
+```
+With that in place, run `python up.py` to generate your cluster nodes and ansible inventory as specified. After that, you'll need to run the `minimal-bootstrap` playbook or specify the python3 interpreter in order to run the bootstrap playbook, which will get the cluster ready for you to deploy Heketi.
+
 ## Storage
 Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight; it has bugs and needs some human intervention. The internal tooling also generates the necessary topology.json required for Heketi to use the volumes for glusterfs.
 Once the cluster is boostrapped and Kubernetes is running, the gk-deploy.sh script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi) must be deployed onto a node in the cluster so that they can be run from there. Running gk-deploy.sh from outside the cluster fails, see [gluster/gluseterkubernetes issue #161](https://github.com/gluster/gluster-kubernetes/issues/161) for details.
