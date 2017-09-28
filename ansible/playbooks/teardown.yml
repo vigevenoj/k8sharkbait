@@ -1,0 +1,45 @@
+# On the master, kubectl drain and kubectl delete
+# On all nodes, clean up any remaining information from this run
+# Destroy the volume groups with vgdisplay + vgremove
+# Remove the gluster and heketi directories and then recreate them empty
+# rm -rf /var/lib/heketi/*
+# rm -rf /var/lib/glusterd/*
+# rm -rf /var/log/glusterfs/*
+# rm -rf /etc/glusterfs/*
+---
+ - hosts: master_node
+   tasks:
+     - name: kubectl drain nodes
+       debug:
+         msg: "kubectl drain {{ item }} --delete-local-data --force"
+         with_items:
+           # How do i use the inventory for these?
+           - robot-ghost-poop-1.xn--9q8h2cq1m.ws
+           - robot-ghost-poop-2.xn--9q8h2cq1m.ws
+           - robot-ghost-poop-3.xn--9q8h2cq1m.ws
+     - name: kubectl delete nodes
+       debug:
+         msg: "kubectl delete node {{ item }} "
+         with_items:
+           - robot-ghost-poop-1.xn--9q8h2cq1m.ws
+           - robot-ghost-poop-2.xn--9q8h2cq1m.ws
+           - robot-ghost-poop-3.xn--9q8h2cq1m.ws
+
+
+ - hosts: all
+   pre_tasks:
+     - name: stop kubelet service
+       systemd: state=stopped name=kubelet
+   tasks:
+     - name: delete kubelet info
+       debug:
+         msg: "rm -rf /var/lib/kubelet/"
+     - name: delete kubernetes ca.crt
+       debug:
+         msg: "rm /etc/kubernetes/pki/ca.crt"
+     - name: delete kubelet.conf
+       debug:
+         msg: "rm /etc/kubernetes/kubelet.conf"
+   post_tasks:
+     - name: start kubelet service again
+       systemd: state=restarted name=kubelet

@@ -1,0 +1,12 @@
+# This ensures that all hosts have python installed
+# Alternatively, set the ansible python interpreter to python3
+# ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory --user root --ask-pass playbooks/minimal-bootstrap.yaml 
+- hosts: all
+  gather_facts: False
+
+  tasks:
+  - name: Install minimal python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+  - name: generate new machine-id
+    shell: /usr/bin/dbus-uuidgen > /etc/machine-id

@@ -1,0 +1,275 @@
+---
+# First run
+# ansible-playbook -i inventory playbooks/bootstrap.yml --user root --ask-pass
+# Second run
+# ansible-playbook -i inventory playbooks/bootstrap.yml --ask-become-pass -b
+- hosts: all
+  # gather_facts: False
+  #  strategy: debug
+  vars:
+    vigevenoj_password: "$6$KxGtWojxinyHB$3QORPRvsP14an5cpar/EP84NYD.moyQjdZXLcl/S/P1UQg.LDFMSYJLqBOhktvZLZOOLHn.6nsGB9zpOpiN3D1"
+    kubeadm_port: 6443
+    base_packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - docker.io
+      - selinux-utils
+      - vim
+      - ufw
+      - ipsec-tools
+      - strongswan-starter
+      - glusterfs-client
+      - lvm2
+    kubernetes_packages: 
+      - kubelet
+      - kubeadm
+      - kubectl
+        # - etcd
+
+  tasks:
+  - name: Add user vigevenoj
+    user:
+      name: vigevenoj
+      password: '$6$KxGtWojxinyHB$3QORPRvsP14an5cpar/EP84NYD.moyQjdZXLcl/S/P1UQg.LDFMSYJLqBOhktvZLZOOLHn.6nsGB9zpOpiN3D1'
+      shell: /bin/bash
+    tags:
+      - users
+      - base
+
+  - name: Add SSH public key to user vigevenoj
+    authorized_key:
+      user: vigevenoj
+      state: present
+      key: "{{ lookup('file', '../files/sbe.pub') }}"
+    tags:
+      - users
+      - base
+      - keys
+
+  - name: Add phone key to authorized_keys
+    authorized_key:
+      user: vigevenoj
+      state: present
+      key: "{{ lookup('file', '../files/termux.pub') }}"
+    tags:
+      - users
+      - base
+      - keys
+
+  - name: Add work laptop key to authorized_keys
+    authorized_key:
+      user: vigevenoj
+      state: present
+      key: "{{ lookup('file', '../files/jlaptop.pub') }}"
+    tags:
+      - users
+      - base
+      - keys
+
+  - name: Add user vigevenoj to sudoers
+    lineinfile: dest=/etc/sudoers
+                regexp="vigevenoj ALL"
+                line="vigevenoj ALL=(ALL) ALL"
+                state=present
+    tags:
+      - users
+      - base
+
+  - name: Disallow SSH password authentication
+    lineinfile:
+      dest=/etc/ssh/sshd_config
+      regexp="^PasswordAuthentication"
+      line="PasswordAuthentication no"
+      state=present
+    notify: Restart ssh
+    tags:
+      - base
+
+  - name: Disallow root SSH access
+    lineinfile: dest=/etc/ssh/sshd_config
+                regexp="^PermitRootLogin"
+                line="PermitRootLogin no"
+                state=present
+    notify: Restart ssh
+    tags:
+      - base
+
+  - name: Update APT package cache
+    apt: update_cache=yes cache_valid_time=3600
+    tags:
+      - packages
+      - kube_packages
+
+  - name: Install base packages
+    apt: 
+      state: latest 
+      name: "{{ item }}"
+    with_items: "{{ base_packages }}"
+    tags:
+      - packages
+      - base_packages
+
+  - name: Update the hostname
+    hostname: 
+      name: "{{ inventory_hostname }}"
+    tags:
+      - base
+
+  - name: Persist the hostname
+    lineinfile: 
+      dest=/etc/hosts
+      regexp="^127\.0\.0\.1(.*)"
+      line="127.0.0.1{{'\t'}}{{ inventory_hostname }} localhost.localdomain localhost"
+      state=present
+      backrefs=yes
+    tags:
+      - base
+
+  - name: Modify /etc/hosts
+    blockinfile:
+      dest: /etc/hosts
+      state: present
+      block: "{{ lookup('file', '../files/internal-names') }}"
+    tags:
+      - hosts
+
+
+  - name: Add kubernetes (google) apt key
+    apt_key:
+      url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+      state: present
+      #  notify: Refresh apt cache
+    tags:
+      - kube_packages
+
+  - name: Configure kubernetes repository
+    apt_repository: 
+      repo: deb https://packages.cloud.google.com/apt/ kubernetes-xenial main
+      state: present
+    tags:
+      - kube_packages
+
+  - name: Install kubernetes packages
+    apt: 
+      state: present
+      name: "{{ item }}"
+    with_items: "{{ kubernetes_packages }}"
+    tags:
+      - kube_packages
+
+  - name: Enable and start the kubelet service
+    systemd: 
+      name: kubelet 
+      state: started
+      enabled: yes
+      daemon_reload: yes
+    tags:
+        - kube
+
+  - name: update kernel settings
+    sysctl:
+      name: net.bridge.bridge-nf-call-iptables
+      value: 1
+      sysctl_set: yes
+      state: present
+      reload: yes
+
+
+  # Don't make a filesystem and mount it or heketi can't mount the block device exclusively
+  #  - name: make filesystem on block device
+  #filesystem:
+  #fstype: ext4
+  #dev: /dev/sdc
+  #    tags:
+  #      - volumes
+  #      - mounts
+  #  - name: configure volume mounts
+  #    mount:
+  #      path: /export/ghost-poop
+  #      src: /dev/sdc
+  #      fstype: ext4
+  #      state: mounted
+  #    tags:
+  # - volumes
+
+  - name: Set up a default-deny firewall policy
+    ufw: state=enabled policy=deny
+    tags:
+      - base
+      - firewall
+    notify: Enable ufw
+
+  - name: Allow ssh traffic inbound
+    ufw: rule=allow port=22 proto=tcp
+    tags:
+      - base
+      - firewall
+    notify: Enable ufw
+
+  - name: Allow kubeadm traffic
+    ufw: rule=allow port={{ kubeadm_port }} proto=tcp
+    tags:
+      - base
+      - firewall
+    notify: Enable ufw
+
+  - name: Allow http traffic
+    ufw: rule=allow proto=tcp port=80
+    tags:
+      - base
+      - firewall
+    notify: Enable ufw
+
+  - name: Allow https traffic
+    ufw: rule=allow proto=tcp port=443
+    tags:
+      - base
+      - firewall
+    notify: Enable ufw
+
+  - name: Allow ipsec vpn traffic
+    ufw: rule=allow port=500
+    tags:
+      - firewall
+    notify: Enable ufw
+  - name: Allow ipsec port 4500
+    ufw: rule=allow port=4500
+    tags:
+      - firewall
+    notify: Enable ufw
+
+  - name: Allow kubelet traffic
+    ufw: 
+      rule=allow
+      src=192.168.0.0/16
+      port=10250:10255
+      proto=tcp
+    tags:
+      - firewall
+      - kube
+    notify: Enable ufw
+
+  - name: Allow internal traffic 
+    ufw:
+      rule: allow
+      src: 192.168.0.0/16
+    tags:
+      - firewall
+      - kube
+    notify: Enable ufw
+
+  # TODO add tasks/roles to clone gluster-kubernetes and run gk-deploy script
+  # TODO add tasks/roles to automate set up of internal VPN
+  # TODO add tasks/roles to deploy HA etcd
+
+  handlers:
+    - name: Restart ssh
+      command: service ssh restart
+
+    - name: Refresh apt cache
+      apt: update_cache=yes
+
+    - name: Enable ufw
+      ufw: state=enabled
