@@ -1,16 +1,14 @@
+# Configuration for a deployment and service of Huginn's web interface
+# This does not configure any Huginn workers; see the huginn-threaded configuration for that
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "2"
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"extensions/v1beta1","kind":"Deployment","metadata":{"annotations":{},"creationTimestamp":null,"name":"huginn-web","namespace":"default"},"spec":{"replicas":1,"strategy":{},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"huginn-web","io.kompose.service":"huginn-web"}},"spec":{"containers":[{"env":[{"name":"DATABASE_ADAPTER","value":"postgresql"},{"name":"DATABASE_NAME","value":"huginn"},{"name":"DATABASE_PASSWORD","value":"DV0w3d5GTJ"},{"name":"DATABASE_USERNAME","value":"postgres"},{"name":"DATABASE_HOST","value":"sappy-pike-postgresql.default.svc.cluster.local"},{"name":"DATABASE_PORT","value":"5432"},{"name":"DATABASE_ENCODING","value":"utf8"},{"name":"POSTGRES_PORT_5432_TCP_PORT","value":"5432"},{"name":"POSTGRES_PORT_5432_TCP_ADDR","value":"sappy-pike-postgresql.default.svc.cluster.local"},{"name":"APP_SECRET_TOKEN","value":"3bd139f9186b31a85336bb89cd1a1337078921134b2f48e022fd09c234d764d3e19b018b2ab789c6e0e04a1ac9e3365116368049660234c2038dc9990513d49c"}],"image":"cantino/huginn-single-process","name":"huginn-web","ports":[{"containerPort":3000}],"resources":{}}],"restartPolicy":"Always"}}},"status":{}}
-  creationTimestamp: null
   generation: 1
   labels:
     io.kompose.service: huginn-web
   name: huginn-web
-  selfLink: /apis/extensions/v1beta1/namespaces//deployments/huginn-web
 spec:
   replicas: 1
   selector:
@@ -93,3 +91,24 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    io.kompose.service: huginn-web
+  name: huginn-web
+spec:
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    io.kompose.service: huginn-web
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+

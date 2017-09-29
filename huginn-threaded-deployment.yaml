@@ -1,3 +1,6 @@
+# Configuration for Huginn workers.
+# This does not configure the Huginn web interface. For that, see the hugin-web configuration
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -89,3 +92,25 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    io.kompose.service: huginn-threaded
+  name: huginn-threaded
+spec:
+  # No ClusterIP; this service provides workers for Huginn
+  clusterIP: None
+  ports:
+  - name: headless
+    port: 55555
+    protocol: TCP
+    targetPort: 55555
+  selector:
+    io.kompose.service: huginn-threaded
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
