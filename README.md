@@ -1,11 +1,9 @@
 # What is this?
-This project contains configuration to run several applications using kubernetes, and to access them from the web
+This project contains configuration to run several applications using kubernetes, and to access them from the web.
 The applications are:
 1. The [Kanboard](https://kanboard.net/) project management software
 2. [Huginn](https://github.com/cantino/huginn/)
 3. Single-serving site "whatcolorischristinashair.com"
-
-They are backed by a postgres database and ingress is configured and tracked via [Traefik](https://traefik.io/)
 
 
 # Prerequisites
@@ -14,7 +12,12 @@ They are backed by a postgres database and ingress is configured and tracked via
   * `helm init`
 3. A deployed StorageClass that can be used to create persistent volume claims.
 
+If you don't have access to these prerequisites, the Preflight section has instructions on how to get a cluster bootstrapped on Linode.
+
+
 # Preflight
+
+## Cluster creation
 You'll need a Linode account and a valid API token in addition to some other details in a configuration file that you should not check into source control. An example config.yaml:
 ```
 linode:
@@ -45,10 +48,11 @@ Once the cluster is boostrapped and Kubernetes is running, the gk-deploy.sh scri
 
 Once storage is online, create a StorageClass to fulfill prerequisite #3. [storageclass.yaml](storageclass.yaml) will work for this.
 
+
 # Deployment
 ## Deploy postgresql with helm:
 
-   `helm install --name spooky-metal stable/postgresql`
+   `helm install --name basic-database stable/postgresql`
 
 ## Deploy Traefik
 
@@ -87,6 +91,8 @@ Once storage is online, create a StorageClass to fulfill prerequisite #3. [stora
    `kubectl apply -f huginn-web-ingress.yaml`  
 
 At this point Kanboard, Huginn's web interface, and Huginn's background task processing should be running in the cluster, and the web interfaces for Kanboard and Huginn should be available at the urls specified in the ingress configurations.
+
+For a Minikube setup, use `huginn.local.ingress.yaml` and point 'hugs.sharkbaitextraordinaire.local' to the minikube IP address
 
 ## Deploy whatcolorischristinashair
 
