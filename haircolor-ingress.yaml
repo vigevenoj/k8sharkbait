@@ -5,6 +5,9 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: haircolor-ingress
+  annotations:
+    # Use traefik to serve this ingress
+    kubernetes.io/ingress.class: "traefik"
 spec:
   rules:
   - host: whatcolorischristinashair.com

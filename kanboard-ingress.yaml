@@ -2,8 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: kanboard-ingress
-  #  annotations:
-  #    traefik.frontend.rule.type: pathprefixstrip
+  annotations:
+    # Use traefik to serve this ingress
+    kubernetes.io/ingress.class: "traefik"
+    traefik.frontend.rule.type: pathprefixstrip
 spec:
   rules:
   - host: kanboard.sharkbaitextraordinaire.local

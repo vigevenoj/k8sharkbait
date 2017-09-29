@@ -18,6 +18,9 @@ metadata:
   name: traefik-web-ui
   namespace: kube-system
   annotations:
+    # Use traefik to serve this ingress
+    kubernetes.io/ingress.class: "traefik"
+    # Configure basic authentication
     ingress.kubernetes.io/auth-type: basic
     ingress.kubernetes.io/auth-secret: traefik-basic-auth
 spec:
