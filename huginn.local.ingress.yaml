@@ -1,0 +1,23 @@
+# This ingress is specifically designed for a local cluster (ie, minikube)
+# Since .local addresses will not resolve, this won't work in production
+# because of the LetsEncrypt configuration
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  generation: 1
+  name: huginn-web-ingress
+  selfLink: /apis/extensions/v1beta1/namespaces/ingresses/huginn-web-ingress
+spec:
+  rules:
+    # Create an entry in /etc/hosts for your minikube IP and this domain
+  - host: hugs.sharkbaitextraordinaire.local
+    http:
+      paths:
+      - backend:
+          serviceName: huginn-web
+          servicePort: http
+        path: /
+status:
+  loadBalancer: {}
+
