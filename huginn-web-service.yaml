@@ -10,7 +10,6 @@ metadata:
   name: huginn-web
   selfLink: /api/v1/namespaces//services/huginn-web
 spec:
-  clusterIP: <unknown>
   ports:
   - name: http
     port: 3000
