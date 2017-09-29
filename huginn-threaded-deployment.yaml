@@ -3,14 +3,11 @@ kind: Deployment
 metadata:
   annotations:
     deployment.kubernetes.io/revision: "2"
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"extensions/v1beta1","kind":"Deployment","metadata":{"annotations":{},"creationTimestamp":null,"name":"huginn-threaded","namespace":"default"},"spec":{"replicas":1,"strategy":{},"template":{"metadata":{"creationTimestamp":null,"labels":{"io.kompose.service":"huginn-threaded"}},"spec":{"containers":[{"args":["/scripts/init","bin/threaded.rb"],"env":[{"name":"DATABASE_ADAPTER","value":"postgresql"},{"name":"DATABASE_NAME","value":"huginn"},{"name":"DATABASE_PASSWORD","value":"DV0w3d5GTJ"},{"name":"DATABASE_USERNAME","value":"postgres"},{"name":"DATABASE_HOST","value":"sappy-pike-postgresql.default.svc.cluster.local"},{"name":"DATABASE_PORT","value":"5432"},{"name":"DATABASE_ENCODING","value":"utf8"},{"name":"POSTGRES_PORT_5432_TCP_PORT","value":"5432"},{"name":"POSTGRES_PORT_5432_TCP_ADDR","value":"sappy-pike-postgresql.default.svc.cluster.local"},{"name":"APP_SECRET_TOKEN","value":"3bd139f9186b31a85336bb89cd1a1337078921134b2f48e022fd09c234d764d3e19b018b2ab789c6e0e04a1ac9e3365116368049660234c2038dc9990513d49c"},{"name":"DATABASE_ADAPTER","value":"mysql2"},{"name":"DATABASE_NAME","value":"huginn"}],"image":"cantino/huginn-single-process","name":"huginn-threaded","resources":{}}],"restartPolicy":"Always"}}},"status":{}}
   creationTimestamp: null
   generation: 1
   labels:
     io.kompose.service: huginn-threaded
   name: huginn-threaded
-  selfLink: /apis/extensions/v1beta1/namespaces//deployments/huginn-threaded
 spec:
   replicas: 1
   selector:
@@ -42,7 +39,6 @@ spec:
             secretKeyRef:
               name: huginn-configuration
               key: database-name
-          value: huginn
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:

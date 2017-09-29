@@ -40,7 +40,6 @@ spec:
             secretKeyRef:
               name: huginn-configuration
               key: database-name
-          value: huginn
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
