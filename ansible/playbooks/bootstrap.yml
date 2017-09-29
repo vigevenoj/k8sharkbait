@@ -4,10 +4,11 @@
 # Second run
 # ansible-playbook -i inventory playbooks/bootstrap.yml --ask-become-pass -b
 - hosts: all
-  # gather_facts: False
+  gather_facts: False
   #  strategy: debug
+  vars_files:
+    - vars/external_vars.yml
   vars:
-    vigevenoj_password: "$6$KxGtWojxinyHB$3QORPRvsP14an5cpar/EP84NYD.moyQjdZXLcl/S/P1UQg.LDFMSYJLqBOhktvZLZOOLHn.6nsGB9zpOpiN3D1"
     kubeadm_port: 6443
     base_packages:
       - apt-transport-https
@@ -31,8 +32,8 @@
   tasks:
   - name: Add user vigevenoj
     user:
-      name: vigevenoj
-      password: '$6$KxGtWojxinyHB$3QORPRvsP14an5cpar/EP84NYD.moyQjdZXLcl/S/P1UQg.LDFMSYJLqBOhktvZLZOOLHn.6nsGB9zpOpiN3D1'
+      name: "{{ rmeote_user_name }}"
+      password: "{{ remote_user_password_hash }}"
       shell: /bin/bash
     tags:
       - users
@@ -40,7 +41,7 @@
 
   - name: Add SSH public key to user vigevenoj
     authorized_key:
-      user: vigevenoj
+      user: "{{ remote_user_name }}"
       state: present
       key: "{{ lookup('file', '../files/sbe.pub') }}"
     tags:
