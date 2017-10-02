@@ -1,0 +1,26 @@
+# Empty mosquitto.conf for mounting into the mosquitto deployment as a ConfigMap
+# To use, write your mosquitto.conf inline and then apply the changes with kubectl
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: mosquitto-config
+data:
+  mosquitto.conf: |
+    listener 8883
+    # Mosquitto configuration file
+    # cafile is mounted from a secret
+    cafile /mosquitto/config/mqtt_ca.crt
+    # certfile is mounted from a secret
+    certfile /mosquitto/config/mqtt_server.crt
+    # keyfile is mounted from a secret
+    keyfile /mosquitto/config/mqtt_server.key
+    tls_version tlsv1
+    require_certificate false
+    use_identity_as_username false
+    # Disallow weak ciphers
+    ciphers DEFAULT:!aNULL:!eNULL:!LOW:!EXPORT:!SSLv2:@STRENGTH
+    # password file is mounted from a secret
+    password_file /mosquitto/config/pwfile
+    listener 8885
+

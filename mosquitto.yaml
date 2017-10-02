@@ -1,0 +1,85 @@
+# This configures a single instance of the mosquitto mqtt server
+# This requires a ConfigMap for mosquitto-config to exist
+# See mosquitto-configmap.blank.yaml for more details
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mosquitto
+spec:
+  # Only 1 replica because clustering mosquitto is out of scope for now
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      hostNetwork: true
+      volumes:
+        # Use an all-in-one projected volume for config/secrets
+        - name: mosquitto-cfg
+          projected:
+            sources:
+            - secret:
+                name: mosquitto-secrets
+                items:
+                  # Custom CA certificate
+                  - key: ca-certificate
+                    path: mqtt_ca.crt
+                  # This server's certificate signed by the CA above
+                  - key: server-certificate
+                    path: mqtt_server.crt
+                  # This server's key, to generate the certificate above
+                  - key: server-key
+                    path: mqtt_server.key
+                  # password file for usernames and hashed passwords
+                  - key: pwfile
+                    path: pwfile
+            - configMap:
+                name: mosquitto-config
+                items:
+                  - key: mosquitto.conf
+                    path: mosquitto.conf
+        # host volume for temporary data; we don't care if this goes away
+        - name: mosquitto-data
+          emptyDir: {}
+      containers:
+        - name: mosquitto
+          image: eclipse-mosquitto:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mqtt
+              containerPort: 8883
+          volumeMounts:
+            # This is from a ConfigMap so it is read-only
+            - mountPath: /mosquitto/config
+              name: mosquitto-cfg
+              readOnly: true
+            - mountPath: /mosquitto/data
+              name: mosquitto-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+spec:
+  selector:
+    app: mosquitto
+  ports:
+    - name: mqtt
+      protocol: TCP
+      port: 8883
+      targetPort: 8883
+      #    - name: secure-mqtt
+      #protocol: TCP
+      #port: 8883
+      #targetPort: 8883
+  # 
+  #externalIPs:
+    # We should figure out a better way to get this configured
+    # but for now, we'll point it at all the IPs that will get traffic
+    # and trust that exposing it as a service will route it correctly
+    #- 45.78.168.133
+    #- 50.116.49.60
+    #- 66.175.209.22
+
