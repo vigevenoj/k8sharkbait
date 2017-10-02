@@ -7,7 +7,7 @@
   gather_facts: False
   #  strategy: debug
   vars_files:
-    - vars/external_vars.yml
+    - ../vars/external_vars.yml
   vars:
     kubeadm_port: 6443
     base_packages:
@@ -243,10 +243,10 @@
 
   - name: Allow kubelet traffic
     ufw: 
-      rule=allow
-      src=192.168.0.0/16
-      port=10250:10255
-      proto=tcp
+      rule: allow
+      src: 192.168.0.0/16
+      port: 10250:10255
+      proto: tcp
     tags:
       - firewall
       - kube
@@ -260,6 +260,17 @@
       - firewall
       - kube
     notify: Enable ufw
+
+  - name: Allow mqtt traffic
+    ufw:
+      rule: allow
+      port: 8883
+      proto: tcp
+    tags:
+      - firewall
+      - mqtt
+    notify: Enable ufw
+
 
   # TODO add tasks/roles to clone gluster-kubernetes and run gk-deploy script
   # TODO add tasks/roles to automate set up of internal VPN
