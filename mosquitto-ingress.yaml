@@ -1,0 +1,30 @@
+# This isn't an Ingress per-se but a way to get MQTT traffic into the cluster
+# by exposing the correct port on all the nodes.
+# Requires external DNS configuration to round-robin amongst the cluster nodes
+# in order for the right magic to happen
+---
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: mqtt-proxy
+  labels:
+    app: mqtt-proxy
+  annotations:
+    description: MQTT-accepting DaemonSet
+    tags: mqtt-proxy
+spec:
+  template:
+    metadata:
+      labels:
+        name: mqtt-proxy
+    spec:
+      containers:
+        - name: proxy-mqtt-8883
+          image: gcr.io/google_containers/proxy-to-service:v2
+          args: [ "tcp", "8883", "mosquitto.default" ]
+          ports:
+          - name: mqtt
+            protocol: TCP
+            containerPort: 8883
+            hostPort: 8883
+
