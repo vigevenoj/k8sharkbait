@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: kanboard-ingress
+  name: kanboard
   annotations:
     # Use traefik to serve this ingress
     kubernetes.io/ingress.class: "traefik"
@@ -13,5 +13,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: kanboard-service
+          serviceName: kanboard
           servicePort: http
