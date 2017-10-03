@@ -14,6 +14,7 @@ spec:
       labels:
         app: mosquitto
     spec:
+      # This might not be needed to get traffic in
       hostNetwork: true
       volumes:
         # Use an all-in-one projected volume for config/secrets
