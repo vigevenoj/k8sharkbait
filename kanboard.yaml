@@ -1,3 +1,7 @@
+# Configuration for Kanboard (https://kanboard.net/)
+# 
+#
+# See kanboard-ingress.yaml for ingress details
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -34,6 +38,11 @@ spec:
           privileged: false
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+        ports:
+          name: http
+          containerPort: 80
+        # We should probably also mount a plugins folder
+        # and a folder for uploaded files
         volumeMounts:
           - name: kanboard-config-volume
             mountPath: /var/www/app/data
@@ -55,7 +64,7 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
-  name: kanboard-service
+  name: kanboard
 spec:
   ports:
     - name: http
