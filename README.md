@@ -1,9 +1,11 @@
 # What is this?
 This project contains configuration to run several applications using kubernetes, and to access them from the web.
 The applications are:
-1. The [Kanboard](https://kanboard.net/) project management software
-2. [Huginn](https://github.com/cantino/huginn/)
-3. Single-serving site "whatcolorischristinashair.com"
+1. Single-serving site "whatcolorischristinashair.com"
+2. The [Kanboard](https://kanboard.net/) project management software
+3. [Huginn](https://github.com/cantino/huginn/)
+4. [Mosquitto](https://mosquitto.org) MQTT broker
+5. https://github.com/vigevenoj/owntracks-to-db
 
 
 # Prerequisites
