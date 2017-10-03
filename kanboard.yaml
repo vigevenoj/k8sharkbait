@@ -39,8 +39,8 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         ports:
-          name: http
-          containerPort: 80
+          - name: http
+            containerPort: 80
         # We should probably also mount a plugins folder
         # and a folder for uploaded files
         volumeMounts:
