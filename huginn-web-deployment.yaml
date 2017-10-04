@@ -76,6 +76,9 @@ spec:
             secretKeyRef:
               name: huginn-configuration
               key: app-secret-token
+        # This is not secret
+        - name: DO_NOT_CREATE_DATABASE
+          value: "true"
         image: huginn/huginn-single-process
         imagePullPolicy: IfNotPresent
         name: huginn-web
