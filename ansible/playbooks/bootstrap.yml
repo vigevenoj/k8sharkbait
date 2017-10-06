@@ -32,7 +32,7 @@
   tasks:
   - name: Add user vigevenoj
     user:
-      name: "{{ rmeote_user_name }}"
+      name: "{{ remote_user_name }}"
       password: "{{ remote_user_password_hash }}"
       shell: /bin/bash
     tags:
@@ -200,7 +200,7 @@
     tags:
       - base
       - firewall
-    notify: Enable ufw
+    # notify: Enable ufw
 
   - name: Allow ssh traffic inbound
     ufw: rule=allow port=22 proto=tcp
