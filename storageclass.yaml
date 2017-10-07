@@ -4,4 +4,4 @@ metadata:
   name: glusterfs-storage
 provisioner: kubernetes.io/glusterfs
 parameters:
-  resturl: "http://10.46.0.4:8080"
+  resturl: "http://10.38.0.4:8080"
