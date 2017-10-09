@@ -125,17 +125,20 @@ in no particular order
 
 # References
 * Overview/deployment
- * https://5pi.de/2016/11/20/15-producation-grade-kubernetes-cluster/
- * http://jeremievallee.com/2017/01/31/kubernetes-with-vagrant-ansible-kubeadm/
- * http://blog.jameskyle.org/2014/08/deploying-baremetal-kubernetes-cluster/
+  * https://5pi.de/2016/11/20/15-producation-grade-kubernetes-cluster/
+  * http://jeremievallee.com/2017/01/31/kubernetes-with-vagrant-ansible-kubeadm/
+  * http://blog.jameskyle.org/2014/08/deploying-baremetal-kubernetes-cluster/
 * Storage (specifically GlusterFS/Heketi)
- * https://github.com/gluster/gluster-kubernetes/tree/master/vagrant
- * https://github.com/heketi/heketi/wiki/Kubernetes-Integration
- * http://dougbtv.com/nfvpe/2017/04/05/glusterfs-persistent/
- * http://blog.lwolf.org/post/how-i-deployed-glusterfs-cluster-to-kubernetes/
- * http://blog.lwolf.org/post/how-to-recover-data-from-broken-glusterfs-cluster/
+  * https://github.com/gluster/gluster-kubernetes/tree/master/vagrant
+  * https://github.com/heketi/heketi/wiki/Kubernetes-Integration
+  * http://dougbtv.com/nfvpe/2017/04/05/glusterfs-persistent/
+  * http://blog.lwolf.org/post/how-i-deployed-glusterfs-cluster-to-kubernetes/
+  * http://blog.lwolf.org/post/how-to-recover-data-from-broken-glusterfs-cluster/
 * Ingress
- * http://containerops.org/2017/01/30/kubernetes-services-and-ingress-under-x-ray/
+  * http://containerops.org/2017/01/30/kubernetes-services-and-ingress-under-x-ray/
 * Other options
- * https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/ for at home
+  * https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/ for at home
 * Linode Python API: https://github.com/linode/python-linode-api/tree/master/linode
+
+# Relevant bug reports
+* https://github.com/kubernetes/kubernetes/issues/41141 : "Transport endpoint is not connected" results in pods with glusterfs volumes stuck in Terminating state until the node is rebooted or the mount is manually unmounted via `fusermount -uz [path to mount]`
