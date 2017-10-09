@@ -200,7 +200,7 @@
     tags:
       - base
       - firewall
-    # notify: Enable ufw
+    #notify: Enable ufw
 
   - name: Allow ssh traffic inbound
     ufw: rule=allow port=22 proto=tcp
