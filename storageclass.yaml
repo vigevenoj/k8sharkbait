@@ -4,4 +4,8 @@ metadata:
   name: glusterfs-storage
 provisioner: kubernetes.io/glusterfs
 parameters:
-  resturl: "http://10.38.0.4:8080"
+  # Change the resturl parameter or your storage won't work
+  # It is the IP of the heketi service's endpoint.
+  # Alternatively, kube-dns should resolve this correctly
+  #resturl: "http://heketi.default.svc.cluster.local:8080"
+  resturl: "http://:8080"
