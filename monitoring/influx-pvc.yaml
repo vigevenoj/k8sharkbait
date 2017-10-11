@@ -1,0 +1,15 @@
+# This is a persistent volume claim for our postgres cluster
+# It will contain data for all of our databases
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: influx
+  namespace: default
+  annotations:
+    volume.beta.kubernetes.io/storage-class: glusterfs-storage
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
