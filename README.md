@@ -42,11 +42,11 @@ cluster:
   # The cluster requires a domain that has DNS configured via Linode
   domain: example.com
 ```
-With that in place, run `python up.py` to generate your cluster nodes and ansible inventory as specified. After that, you'll need to run the `minimal-bootstrap` playbook or specify the python3 interpreter in order to run the bootstrap playbook, which will get the cluster ready for you to deploy Heketi.
+With that in place, run `python up.py` to generate your cluster nodes and ansible inventory as specified. After that, you'll need to run the `minimal-bootstrap` playbook or specify the python3 interpreter in order to run the bootstrap playbook, which will get the cluster ready for you to deploy Heketi.  
 
 ## Storage
-Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight; it has bugs and needs some human intervention. The internal tooling also generates the necessary topology.json required for Heketi to use the volumes for glusterfs.
-Once the cluster is boostrapped and Kubernetes is running, the gk-deploy.sh script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi) must be deployed onto a node in the cluster so that they can be run from there. Running gk-deploy.sh from outside the cluster fails, see [gluster/gluseterkubernetes issue #161](https://github.com/gluster/gluster-kubernetes/issues/161) for details.
+Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight; it has bugs and needs some human intervention. The internal tooling also generates the necessary topology.json required for Heketi to use the volumes for glusterfs.  
+Once the cluster is boostrapped and Kubernetes is running, the gk-deploy.sh script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi) must be deployed onto a node in the cluster so that they can be run from there. Running gk-deploy.sh from outside the cluster fails, see [gluster/gluseterkubernetes issue #161](https://github.com/gluster/gluster-kubernetes/issues/161) for details.  
 
 Once storage is online, create a StorageClass to fulfill prerequisite #3. [storageclass.yaml](storageclass.yaml) will work for this.
 
