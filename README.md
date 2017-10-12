@@ -140,6 +140,15 @@ in no particular order
   * https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/ for at home
 * Linode Python API: https://github.com/linode/python-linode-api/tree/master/linode
 
+# Troubleshooting
+
+## Copying data from a gluster-backed volume
+ * Use the `heketi-cli` API or `gluster` command (via `kubectl exec` on a glusterfs pod) to determine name of the brick where the data resides and which host that brick is on.
+ * On the host where the brick is located, use `lvdisplay` to find the path of the LV where the brick is
+ * Mount the device from the LV Path of `lvdisplay` somewhere, eg, /mount/mybrick
+ * Copy whatever data you need from /mount/mybrick/brick/
+
+
 # Relevant bug reports
 * https://github.com/kubernetes/kubernetes/issues/41141 : "Transport endpoint is not connected" results in pods with glusterfs volumes stuck in Terminating state until the node is rebooted or the mount is manually unmounted via `fusermount -uz [path to mount]`
-* Heketi needs an exclusive lock on its database. If an existing pod terminates and a new pod replaces it quickly enough, the second pod will be unable to access the database in read/write mode and will log a message that it is trying again in read-only mode. If this happens, existing volume claims will be honored but new ones cannot be created. To resolve it, scale the Heketi deployment to 0 replicas with `kubectl scale --replicas=0 deploy/heketi`, wait a few minutes, and then scale the deployment back to 1 replica with `kubectl scale --replicas=1 deploy/heketi` and then watch its logs to confirm Heketi started up in read/write mode. See https://github.com/gluster/gluster-kubernetes/issues/257 for some additional details
+* Heketi needs an exclusive lock on its database (boltdb). If an existing pod terminates and a new pod replaces it quickly enough, the second pod will be unable to access the database in read/write mode and will log a message that it is trying again in read-only mode. If this happens, existing volume claims will be honored but new ones cannot be created. To resolve it, scale the Heketi deployment to 0 replicas with `kubectl scale --replicas=0 deploy/heketi`, wait a few minutes, and then scale the deployment back to 1 replica with `kubectl scale --replicas=1 deploy/heketi` and then watch its logs to confirm Heketi started up in read/write mode. See https://github.com/gluster/gluster-kubernetes/issues/257 for some additional details
