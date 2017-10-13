@@ -1,4 +1,4 @@
-# This is a persistent volume claim for our postgres cluster
+# This is a persistent volume claim for our influxdb pod
 # It will contain data for all of our databases
 kind: PersistentVolumeClaim
 apiVersion: v1
