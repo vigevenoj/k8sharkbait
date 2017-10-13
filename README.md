@@ -76,8 +76,7 @@ Once storage is online, create a StorageClass to fulfill prerequisite #3. [stora
    Our deployment uses a secret mounted in a volume for configuration to connect to the database
 
    `kubectl apply -f kanboard-config-secret.yaml`  
-   `kubectl apply -f kanboard-deployment.yaml`  
-   `kubectl apply -f kanboard-service.yaml`  
+   `kubectl apply -f kanboard.yaml`  
 ## Configure an ingress through Traefik to Kanboard:
 
    `kubectl apply -f kanboard-ingress.yaml`
@@ -85,9 +84,7 @@ Once storage is online, create a StorageClass to fulfill prerequisite #3. [stora
 
    We use the [single-process](https://github.com/cantino/huginn/tree/master/docker/single-process) docker image and configuration but pass in additional configuration as environment variables to specify the local postgresql database.  
    `kubectl apply -f huginn-threaded-deployment.yaml`  
-   `kubectl apply -f huginn-threaded-service.yaml`  
    `kubectl apply -f huginn-web-deployment.yaml`  
-   `kubectl apply -f huginn-web-service.yaml`  
 ## Configure an ingress through Traefik to Huginn:
 
    `kubectl apply -f huginn-web-ingress.yaml`  
