@@ -112,12 +112,12 @@ For a Minikube setup, use `huginn.local.ingress.yaml` and point 'hugs.sharkbaite
 # Future work
 in no particular order
 * Add inbound/outbound SMTP
-* influxdb
-* grafana
+* influxdb (spinning this up is underway; see the monitoring directory for helm chart values and volume claims)
+* grafana (probably unneeded if a full TICK stack is used)
 * secure configuration parameters
-* prometheus/alertmanager or another monitoring and metrics stack
-* mqtt
-* owntracks
+* prometheus/alertmanager or another monitoring and metrics stack (see note above about influxdb)
+* mqtt (see mosquitto.yaml for this. It does not have an ingress)
+* owntracks (owntracks2db pod works and is persisting data, see locationupdates.yaml)
 
 
 # References
