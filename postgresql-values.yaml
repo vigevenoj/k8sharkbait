@@ -44,7 +44,7 @@ persistence:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
-  size: 6Gi
+  size: 3Gi
   subPath: "postgresql-db"
 
 metrics:
