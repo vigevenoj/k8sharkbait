@@ -16,7 +16,7 @@ service:
 ## Persist data to a persitent volume
 ##
 persistence:
-  enabled: false
+  enabled: true
   ## chronograf data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -24,7 +24,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: "glusterfs-storage"
   accessMode: ReadWriteMany
   size: 1Gi
 
