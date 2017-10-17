@@ -1,4 +1,5 @@
 *.secret.yaml
+*.secret
 ansible/inventory
 ansible/files/*.pub
 ansible/playbooks/*.retry
