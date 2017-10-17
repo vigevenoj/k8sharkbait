@@ -137,6 +137,12 @@ in no particular order
   * https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/ for at home
 * Linode Python API: https://github.com/linode/python-linode-api/tree/master/linode
 
+## Notes
+
+### Adding basic auth for an ingress
+ * Create credentials with `htpasswd -Bc ingressname.auth.secret username`
+ * `kubectl create secret generic ingressname-basic-auth --from-file ingressname.auth.secret`
+
 # Troubleshooting
 
 ## Copying data from a gluster-backed volume

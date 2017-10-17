@@ -1,0 +1,20 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: chompy-tick-ingress
+  annotations:
+    # Use traefik to serve this ingress
+    kubernetes.io/ingress.class: "traefik"
+    # Configure basic auth
+    ingress.kubernetes.io/auth-type: basic
+    ingress.kubernetes.io/auth-secret: chompy-tick-basic-auth
+spec:
+  rules:
+  - host: chomp.xn--9q8h2cq1m.ws
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: chompy-chronograf
+          servicePort: 80
