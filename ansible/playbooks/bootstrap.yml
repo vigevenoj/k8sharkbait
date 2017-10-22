@@ -271,6 +271,16 @@
       - mqtt
     notify: Enable ufw
 
+  - name: Allow traffic on weave
+    ufw:
+      rule: allow
+      interface: weave
+      direction: in
+    tags:
+      - firewall
+      - kube
+    notify: Enable ufw
+
 
   # TODO add tasks/roles to clone gluster-kubernetes and run gk-deploy script
   # TODO add tasks/roles to automate set up of internal VPN
