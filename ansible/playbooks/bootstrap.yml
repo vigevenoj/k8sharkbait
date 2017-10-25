@@ -23,6 +23,7 @@
       - strongswan-starter
       - glusterfs-client
       - lvm2
+      - conntrack
     kubernetes_packages: 
       - kubelet
       - kubeadm
@@ -195,19 +196,26 @@
   #    tags:
   # - volumes
 
-  - name: Set up a default-deny firewall policy
-    ufw: state=enabled policy=deny
+  - name: Reset firewall
+    ufw: state=reset
     tags:
-      - base
+      - firewallreset
       - firewall
-    #notify: Enable ufw
 
   - name: Allow ssh traffic inbound
     ufw: rule=allow port=22 proto=tcp
     tags:
       - base
       - firewall
-    notify: Enable ufw
+    #notify: Enable ufw  
+
+  - name: Set up a default-deny firewall policy
+
+    ufw: state=enabled policy=deny
+    tags:
+      - base
+      - firewall
+    #notify: Enable ufw
 
   - name: Allow kubeadm traffic
     ufw: rule=allow port={{ kubeadm_port }} proto=tcp
