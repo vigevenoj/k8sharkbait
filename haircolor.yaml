@@ -1,5 +1,3 @@
-# Undocumented requirements:
-# - "whatcolorischristinashair" docker image available to cluster nodes
 # See haircolor-ingress.yaml for additional notes
 ---
 apiVersion: extensions/v1beta1
@@ -15,9 +13,8 @@ spec:
     spec:
       containers:
       - name: whatcolorischristinashair
-        # This image is private and has been pre-pushed to the nodes
-        image: whatcolorischristinashair
-        imagePullPolicy: Never # future work: change to IfNotPresent
+        image: vigevenoj/whatcolorischristinashair:latest
+        imagePullPolicy: Always
         ports:
           - name: http-port
             containerPort: 80
