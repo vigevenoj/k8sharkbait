@@ -95,13 +95,13 @@ For a Minikube setup, use `huginn.local.ingress.yaml` and point 'hugs.sharkbaite
 
 ## Deploy whatcolorischristinashair
 
-   This is a privately-published image that is side-loaded onto the cluster nodes. The deployment and service are managed via haircolor.yaml and a Traefik ingress is managed via haircolor-ingress.yaml  
+   This is both a joke and the reason that this project exists. For additional details, see [whatcolorischristinashair](https://github.com/vigevenoj/whatcolorischristinashair). The deployment and service are managed via haircolor.yaml and a Traefik ingress is managed via haircolor-ingress.yaml  
 
    `kubectl apply -f haircolor.yaml`  
    `kubectl apply -f haircolor-ingress.yaml`  
 
-### Updating whatcolorischristinashair
-   This probably doesn't affect anybody but me since I'm building this image and side-loading it into the cluster, but when the site needs an update, the following steps need to happen:  
+### Updating side-loaded images that are not publicly available
+   For images that are built privately and then side-loaded into the cluster, the following steps need to happen:  
    1. Build the docker image with `docker build`
    2. Save the image locally with `docker save`
    3. scp the image to the cluster nodes
