@@ -151,6 +151,10 @@ in no particular order
  * Mount the device from the LV Path of `lvdisplay` somewhere, eg, /mount/mybrick
  * Copy whatever data you need from /mount/mybrick/brick/
 
+## All gluster volumes have gone read-only
+This is usually caused by an unplanned reboot of the physical hardware under the underlying host VM.  Note that the gluster logs may only indicate some sort of networking problem (connection refused to the remote bricks making up the rest of the volume) but the problem is that the process that should be listening is not running on the remote hosts.
+ * Confirm that there are fewer than two processes involving gluster on the VM with `ps aux | grep gluster`
+ * Delete the existing glusterfs pods and let them be re-created to resolve the issue
 
 # Relevant bug reports
 * https://github.com/kubernetes/kubernetes/issues/41141 : "Transport endpoint is not connected" results in pods with glusterfs volumes stuck in Terminating state until the node is rebooted or the mount is manually unmounted via `fusermount -uz [path to mount]`
