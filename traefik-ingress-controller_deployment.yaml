@@ -42,7 +42,7 @@ spec:
         - --kubernetes
         - --configFile=/config/traefik.toml
         - --logLevel=INFO
-        image: traefik
+        image: traefik:1.5
         imagePullPolicy: Always
         name: traefik-ingress-lb
         env:
