@@ -24,6 +24,7 @@
       - glusterfs-client
       - lvm2
       - conntrack
+      - golang
     kubernetes_packages: 
       - kubelet
       - kubeadm
