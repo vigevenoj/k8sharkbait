@@ -8,14 +8,14 @@ kind: Deployment
 metadata:
   labels:
     app: kanboard
-    version: stable
+    version: v1.2.0
   name: kanboard
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: kanboard
-      version: stable
+      version: v1.2.0
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -26,11 +26,11 @@ spec:
       creationTimestamp: null
       labels:
         app: kanboard
-        version: stable
+        version: v1.2.0
       name: kanboard
     spec:
       containers:
-      - image: kanboard/kanboard:stable
+      - image: kanboard/kanboard:v1.2.0
         imagePullPolicy: IfNotPresent
         name: kanboard
         resources: {}
