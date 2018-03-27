@@ -37,8 +37,6 @@ spec:
       containers:
       - args:
         - -d
-        - --web
-        - --web.address=:8081
         - --kubernetes
         - --configFile=/config/traefik.toml
         - --logLevel=INFO

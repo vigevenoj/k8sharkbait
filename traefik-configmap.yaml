@@ -5,28 +5,45 @@ metadata:
   namespace: kube-system
 data:
   traefik.toml: |
-    # traefik.toml
     defaultEntryPoints = ["http","https"]
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      # Redirect all http traffic to https
       [entryPoints.http.redirect]
       entryPoint = "https"
       [entryPoints.https]
       address = ":443"
       [entryPoints.https.tls]
-    [web]
-    [web.statistics]
-      RecentErrors = 10
+      # Add a dashboard and API endpoint
+      [entryPoints.dashboard]
+      address = ":8080"
+      [entryPoints.api]
+      address = ":8081"
+
+    [api]
+    entryPoint = "api"
+    dashboard = true
+    [api.statistics]
+    recentErrors = 10
+
+    [metrics]
+      [metrics.statistics]
+      recentErrors = 50
+      [metrics.influxdb]
+      address = "icy-influxdb.cluster.local:8086"
+      pushinterval = "60s"
+
     [acme]
     email = "vigevenoj@gmail.com"
+    # /etc/traefik/ is backed by a persistent volume (see the deployment spec)
     storage = "/etc/traefik/acme.json"
     #dnsProvider = "linode"
     entryPoint = "https"
     acmeLogging = true
     onDemand = false
     onHostRule = true
-    # Use the staging env until it's all working
+    # staging server for test deployments
     #caServer = "https://acme-staging.api.letsencrypt.org/directory"
     caServer = "https://acme-v01.api.letsencrypt.org/directory"
     [[acme.domains]]
