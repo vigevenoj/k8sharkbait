@@ -98,6 +98,18 @@ spec:
           configMap:
             name: owntracks2db-blank-config
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: owntracks2db
+spec:
+  ports:
+  - name: monitoring
+    port: 8000
+  selector:
+    app: owntracks2db
+
 # This is an example of the secret required for this deployment:
 #---
 #kind: Secret
