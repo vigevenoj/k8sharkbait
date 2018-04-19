@@ -437,6 +437,7 @@ single:
       prometheus:
         urls: 
           - "https://kubernetes.default:443/metrics"
+          - "http://owntracks2db.default:8000"
         name_prefix: "prom_"
         bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         insecure_skip_verify: true
