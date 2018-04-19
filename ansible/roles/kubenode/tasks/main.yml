@@ -1,0 +1,52 @@
+- name: Allow kubeadm traffic
+  ufw:
+    rule: allow
+    port: "{{ kubeadm_port }}"
+    proto: tcp
+  tags:
+    - base
+    - firewall
+  notify: Enable ufw
+
+- name: Add kubernetes (google) apt key
+  apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    state: present
+    # notify: refresh apt cache
+  tags:
+    - kube_packages
+
+- name: Configure kubernetes repository
+  apt_repository:
+    repo: deb https://packages.cloud.google.com/apt/ kubernetes-xenial main
+    state: present
+  tags:
+    - kube_packages
+
+- name: Install kubernetes packages
+  apt:
+    state: present
+    name: "{{ item }}"
+  with_items: "{{ kubernetes_packages }}"
+  tags:
+    - kube_packages
+
+- name: Enable and start the kubelet service
+  systemd:
+    name: kubelet
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  tags:
+    - kube
+
+- name: Update kernel settings
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Get crictl
+  command: go get github.com/kubernetes-incubator/cri-tools/cmd/crictl creates=go/bin/crictl

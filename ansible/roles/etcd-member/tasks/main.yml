@@ -1,0 +1,26 @@
+# Tasks for configuring etcd members
+- name: Install etcd package
+  apt:
+    state: present
+    name: "{{ item }}"
+  with_items: "{{ etcd_packages }}"
+  tags:
+    - packages
+    - etcd
+    - etcd_packages
+
+
+- name: Allow etcd traffic
+  ufw:
+    rule: allow
+    port: 2379:2380
+    proto: tcp
+  tags:
+    - etcd
+  notify: Enable ufw
+
+- name: initial etcd configuration
+  template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+  notify: restart etcd

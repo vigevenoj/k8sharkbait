@@ -1,0 +1,23 @@
+# /etc/systemd/system/etcd.service
+[Unit]
+Description=etcd
+After=network.target
+
+[Service]
+Type=notify
+ExecStart=/opt/etcd/etcd --name {{ inventory_hostname }} \
+  --data-dir /var/lib/etcd \
+  --listen-client-urls "http://{{ hostvars[item].ansible_eth0.ipv4.address }}:2379,http://localhost:2379" \
+  --advertise-client-urls "http://{{ hostvars[item].ansible_eth0.ipv4.address }}:2379" \
+  --listen-peer-urls "http://{{ hostvars[item].ansible_eth0.ipv4.address }}:2380" \
+  --initial-cluster "{% for host in hosts %} {{ hostvars[host].inventory_hostname }}=http://{{ hostvars[item].ansible_eth0.ipv4.address }}:2380,{% endfor %}" \
+  --initial-advertise-peer-urls "http://{{ hostvars[item].ansible.eth0.ipv4.address }}:2380" \
+  --heartbeat-interval 200 \
+  --election-timeout 5000
+Restart=always
+RestartSec=5
+TimeoutStartSec=0
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target

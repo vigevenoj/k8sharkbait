@@ -1,0 +1,10 @@
+---
+# handlers for common role
+- name: Restart ssh
+  service: name=ssh state=restarted
+
+- name: Refresh apt cache
+  apt: update_cache=yes
+
+- name: Enable ufw
+  ufw: state=enabled

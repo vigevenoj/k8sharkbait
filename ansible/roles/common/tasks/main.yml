@@ -1,0 +1,197 @@
+---
+# Common installation tasks
+- name: update packages
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: Add our user
+  user:
+    name: "{{ remote_user_name }}"
+    password: "{{ remote_user_password_hash }}"
+    shell: /bin/bash
+  tags:
+    - users
+    - base
+
+- name: Add SSH public key to our user
+  authorized_key:
+    user: "{{ remote_user_name }}"
+    state: present
+    key: "{{ item }}"
+  with_items:
+    - "{{ lookup('file', '../files/sbe.pub') }}"
+    - "{{ lookup('file', '../files/jlaptop.pub') }}"
+  tags:
+    - users
+    - base
+    - keys
+
+- name: Add our user to sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: "%vigevenoj ALL"
+    line: "%vigevenoj ALL=(ALL) ALL"
+    state: present
+    validate: '/usr/sbin/visudo -cf %s'
+  tags:
+    - users
+    - base
+
+- name: Disallow SSH password authentication
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PermitRootLogin"
+              line="PermitRootLogin no"
+              state=present
+  notify: Restart ssh
+  tags:
+    - base
+
+- name: Update the hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  tags:
+    - base
+
+- name: Persist the hostname
+  lineinfile:
+    dest=/etc/hosts
+    regexp="^127\.0\.0\.1(.*)"
+    line="12.0.0.1{{'\t'}}{{ inventory_hostname }} localhost.localdomain localhost"
+    state=present
+    backrefs=yes
+  tags:
+    - base
+
+- name: Modify /etc/hosts with other nodes
+  blockinfile:
+    dest: /etc/hosts
+    state: present
+    block: "{{ lookup('file', '../files/internal-names') }}"
+
+- name: Install base package
+  apt:
+    state: present
+    name: "{{ item }}"
+  with_items: "{{ base_packages }}"
+  tags:
+    - packages
+    - base_packages
+
+#
+#- name: Reset firewall
+#  ufw: state=reset
+#  tags:
+#    - firewall
+#    - firewallreset
+
+- name: Allow ssh traffic inbound
+  ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+  tags:
+    - base
+    - firewall
+
+- name: Allow http traffic
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+  tags:
+    - base
+    - firewall
+  notify: Enable ufw
+
+- name: Allow https traffic
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+  tags:
+    - base
+    - firewall
+  notify: Enable ufw
+
+# This should probably be moved to the ipsec member role
+- name: Allow ipsec vpn traffic
+  ufw:
+    rule: allow
+    port: 500
+  tags:
+    - firewall
+  notify: Enable ufw
+# This should probably be moved to the ipsec member role
+- name: Allow ipsec port 4500
+  ufw:
+    rule: allow
+    port: 4500
+  tags:
+    - firewall
+  notify: Enable ufw
+# This shoudl probably be moved to the ipsec member role
+- name: Allow ipsec esp traffic
+  ufw:
+    rule: allow
+    proto: esp
+  tags:
+    - firewall
+  notify: Enable ufw
+
+- name: Allow kubelet traffic
+  ufw:
+    rule: allow
+    src: 192.168.0.0/16
+    port: 10250:10255
+    proto: tcp
+  tags:
+    - firewall
+    - kube
+  notify: Enable ufw
+
+- name: Allow internal traffic
+  ufw:
+    rule: allow
+    src: 192.168.0.0/16
+  tags:
+    - firewall
+    - kube
+  notify: Enable ufw
+
+- name: Allow mqtt traffic
+  ufw:
+    rule: allow
+    port: 8883
+    proto: tcp
+  tags:
+    - firewall
+    - mqtt
+  notify: Enable ufw
+
+- name: Allow traffic on weave
+  ufw:
+    rule: allow
+    interface: weave
+    direction: in
+    proto: any
+  tags:
+    - firewall
+    - kube
+  notify: Enable ufw
+
+- name: Allow etcd traffic
+  ufw:
+    rule: allow
+    port: 2379:2380
+    proto: tcp
+  tags:
+    - kube
+    - etcd
+  notify: Enable ufw
+
+- name: Set up default-deny firewall policy
+  ufw:
+    state: enabled
+    policy: deny
+  tags:
+    - base
+    - firewall

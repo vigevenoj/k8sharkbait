@@ -1,0 +1,19 @@
+---
+# Top-level playbook to configure our cluster with the output of up.py
+# First run
+# ansible-playbook -i inventory playbooks/bootstrap.yml --user root --ask-pass
+# Second run
+# ansible-playbook -i inventory playbooks/bootstrap.yml --ask-become-pass -b
+
+- hosts: all
+  gather_facts: False
+  # strategy: debug
+  become: true
+  vars_files:
+    - ./vars/external_vars.yml
+
+  roles:
+    - common # common base configuration
+    - ipsec # ipsec vpn between nodes
+    - etcd_member # first three nodes are etcd members
+    - kubenode # all nodes are kubernetes nodes

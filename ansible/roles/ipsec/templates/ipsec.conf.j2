@@ -1,0 +1,23 @@
+# ipsec.conf - strongSwan IPsec configuration file
+# managed by ansible
+
+#basic configuration
+
+config setup
+ca sharkbaitextraordinaire
+  cacert=ca-chain.crt.pem
+  auto=add
+
+{% for host in in groups['ipsec'] %}
+{% if not ansible_hostname == hostvars[host].ansible_hostname %}
+conn {{ hostvars[host].ansible_hostname }}
+  type=transport
+  authby=pubkey
+  auto=route
+  leftid=@{{ ansible_hostname }}
+  leftcert=/etc/ipsec.d/certs/{{ ansible_hostname }}.crt.pem
+  right={{ hostvars[host].ansible_eth0.ipv4.address }}
+  rightid=@{{ hostvars[host].ansible_hostname }}
+  esp=aes128gcm16!
+{% endif %}
+{% endfor %}

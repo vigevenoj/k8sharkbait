@@ -1,0 +1,6 @@
+# Vars for the kubenode role
+kubernetes_packages:
+  - kubelet
+  - kubeadm
+  - kubectl
+kubeadm_port: 6443

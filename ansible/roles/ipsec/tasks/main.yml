@@ -1,0 +1,21 @@
+# Tasks to configure ipsec tunnels between nodes in the cluster
+# Assume that pre-generated certificates and keys are present in ../files/
+# so that we have files like this:
+# - ca.crt.pem , the ca certificate
+# - host1.crt.pem
+# - host1.key.pem
+# - host2.crt.pem
+# - host2.key.pem
+# - host3.crt.pem
+# - host2.key.pem
+# I've generated them via radiac's caman script because I use it for other stuff
+# alternatively, just use a pre-shared key
+- name: install ipsec tools
+  apt:
+    name: ipsec-tools
+    state: present
+
+- name: configure ipsec.conf
+  template:
+    src: ipsec.conf.j2
+    dest: /etc/ipsec.
