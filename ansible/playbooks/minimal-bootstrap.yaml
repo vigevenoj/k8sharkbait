@@ -5,8 +5,8 @@
   gather_facts: False
 
   tasks:
-  - name: Install minimal python 2
-    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    # - name: Install minimal python 2
+    #raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
   # This is required on freshly-created VMs or they will all have the same MAC address and inter-node networking will fail.
   - name: generate new machine-id
