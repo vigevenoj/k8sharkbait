@@ -29,7 +29,7 @@
       - kubelet
       - kubeadm
       - kubectl
-        # - etcd
+      - etcd # all the nodes will need etcd (we have 3 nodes now; this code might need to change if the size is more than 7)
 
   tasks:
   - name: Add user vigevenoj
@@ -179,6 +179,12 @@
       state: present
       reload: yes
 
+  - name: Get the crictl code
+    command: go get github.com/kubernetes-incubator/cri-tools/cmd/crictl
+
+    #- name: Move the crictl executable
+    #command: mv go/bin/crictl /usr/local/bin/
+
 
   # Don't make a filesystem and mount it or heketi can't mount the block device exclusively
   #  - name: make filesystem on block device
@@ -285,9 +291,20 @@
       rule: allow
       interface: weave
       direction: in
+      proto: any
     tags:
       - firewall
       - kube
+    notify: Enable ufw
+
+  - name: Allow etcd traffic
+    ufw:
+      rule: allow
+      port: 2379:2380
+      proto: tcp
+    tags:
+      - kube
+      - etcd
     notify: Enable ufw
 
 
