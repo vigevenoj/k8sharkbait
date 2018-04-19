@@ -8,7 +8,7 @@ ca sharkbaitextraordinaire
   cacert=ca-chain.crt.pem
   auto=add
 
-{% for host in in groups['ipsec'] %}
+{% for host in groups['kubenodes'] %}
 {% if not ansible_hostname == hostvars[host].ansible_hostname %}
 conn {{ hostvars[host].ansible_hostname }}
   type=transport

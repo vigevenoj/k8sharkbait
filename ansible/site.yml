@@ -13,7 +13,7 @@
     - ./vars/external_vars.yml
 
   roles:
-    - common # common base configuration
-    - ipsec # ipsec vpn between nodes
-    - etcd_member # first three nodes are etcd members
-    - kubenode # all nodes are kubernetes nodes
+    - { role: common, tags: ['common'] } # common base configuration
+    - { role: ipsec, tags: ['ipsec'] } # ipsec vpn between nodes
+    - { role: etcd-member, tags: [ 'etcd' ] } # first three nodes are etcd members
+    - { role: kubenode, tags: ['kubenode'] } # all nodes are kubernetes nodes

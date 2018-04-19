@@ -19,16 +19,16 @@
   file:
     src: ../files/ca-chain.crt.pem
     dest: /etc/ipsec.d/cacerts/
-    
+
 - name: Copy certificate to host
   copy:
-    content: ../files/{{ ansible_hostname }}.crt.pem
-    dest: /etc/ipsec.d/certs/{{ ansible_hostname }}.crt.pem
+    content: ../files/{{ inventory_hostname }}.crt.pem
+    dest: /etc/ipsec.d/certs/{{ inventory_hostname }}.crt.pem
 
 - name: Copy key to host
   copy:
-    content: ../files/{{ ansible_hostname}}.key.pem
-    dest: /etc/ipsec.d/private/{{ ansible_hostname }}.key.pem
+    content: ../files/{{ inventory_hostname}}.key.pem
+    dest: /etc/ipsec.d/private/{{ inventory_hostname }}.key.pem
 
 - name: configure ipsec.conf
   template:
