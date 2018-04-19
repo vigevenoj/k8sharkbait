@@ -15,7 +15,22 @@
     name: ipsec-tools
     state: present
 
+- name: Deploy ca certificate to nodes
+  file:
+    src: ../files/ca-chain.crt.pem
+    dest: /etc/ipsec.d/cacerts/
+    
+- name: Copy certificate to host
+  copy:
+    content: ../files/{{ ansible_hostname }}.crt.pem
+    dest: /etc/ipsec.d/certs/{{ ansible_hostname }}.crt.pem
+
+- name: Copy key to host
+  copy:
+    content: ../files/{{ ansible_hostname}}.key.pem
+    dest: /etc/ipsec.d/private/{{ ansible_hostname }}.key.pem
+
 - name: configure ipsec.conf
   template:
     src: ipsec.conf.j2
-    dest: /etc/ipsec.
+    dest: /etc/ipsec.conf
