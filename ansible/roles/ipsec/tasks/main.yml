@@ -34,3 +34,8 @@
   template:
     src: ipsec.conf.j2
     dest: /etc/ipsec.conf
+
+- name: restart strongswan service
+  service:
+    name: strongswan
+    status: restarted

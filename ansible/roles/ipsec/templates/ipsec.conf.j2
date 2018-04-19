@@ -9,15 +9,15 @@ ca sharkbaitextraordinaire
   auto=add
 
 {% for host in groups['kubenodes'] %}
-{% if not ansible_hostname == hostvars[host].ansible_hostname %}
-conn {{ hostvars[host].ansible_hostname }}
+{% if not inventory_hostname == hostvars[host].inventory_hostname %}
+conn {{ hostvars[host].inventory_hostname }}
   type=transport
   authby=pubkey
   auto=route
-  leftid=@{{ ansible_hostname }}
-  leftcert=/etc/ipsec.d/certs/{{ ansible_hostname }}.crt.pem
+  leftid=@{{ inventory_hostname }}
+  leftcert=/etc/ipsec.d/certs/{{ inventory_hostname }}.crt.pem
   right={{ hostvars[host].ansible_eth0.ipv4.address }}
-  rightid=@{{ hostvars[host].ansible_hostname }}
+  rightid=@{{ hostvars[host].inventory_hostname }}
   esp=aes128gcm16!
 {% endif %}
 {% endfor %}

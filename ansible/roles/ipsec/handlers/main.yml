@@ -1,0 +1,4 @@
+- name: reload ipsec configuration
+  service:
+    name: strongswan
+    state: restarted
