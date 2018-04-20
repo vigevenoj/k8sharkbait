@@ -16,24 +16,29 @@
     state: present
 
 - name: Deploy ca certificate to nodes
-  file:
+  copy:
     src: ../files/ca-chain.crt.pem
-    dest: /etc/ipsec.d/cacerts/
+    dest: /etc/ipsec.d/cacerts/ca-chain.crt.pem
 
 - name: Copy certificate to host
   copy:
-    content: ../files/{{ inventory_hostname }}.crt.pem
+    src: ../files/{{ inventory_hostname }}.crt.pem
     dest: /etc/ipsec.d/certs/{{ inventory_hostname }}.crt.pem
 
 - name: Copy key to host
   copy:
-    content: ../files/{{ inventory_hostname}}.key.pem
+    src: ../files/{{ inventory_hostname}}.key.pem
     dest: /etc/ipsec.d/private/{{ inventory_hostname }}.key.pem
 
 - name: configure ipsec.conf
   template:
     src: ipsec.conf.j2
     dest: /etc/ipsec.conf
+
+- name: configure ipsec secrets
+  template:
+    src: ipsec.secrets.j2
+    dest: /etc/ipsec.secrets
 
 - name: restart strongswan service
   service:
