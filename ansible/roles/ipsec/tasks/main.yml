@@ -15,10 +15,15 @@
     name: ipsec-tools
     state: present
 
-- name: Deploy ca certificate to nodes
+- name: Deploy intermediate ca certificate to nodes
   copy:
-    src: ../files/ca-chain.crt.pem
-    dest: /etc/ipsec.d/cacerts/ca-chain.crt.pem
+    src: ../files/intermediate.ca.crt.pem
+    dest: /etc/ipsec.d/cacerts/intermediate.ca.crt.pem
+
+- name: Deploy root ca certificate to nodes
+  copy:
+    src: ../files/root.ca.crt.pem
+    dest: /etc/ipsec.d/cacerts/root.ca.crt.pem
 
 - name: Copy certificate to host
   copy:
