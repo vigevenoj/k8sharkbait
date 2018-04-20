@@ -16,7 +16,7 @@ conn {{ hostvars[host].inventory_hostname }}
   auto=route
   leftid=@{{ inventory_hostname }}
   leftcert=/etc/ipsec.d/certs/{{ inventory_hostname }}.crt.pem
-  right={{ hostvars[host].ansible_eth0.ipv4.address }}
+  right={{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}
   rightid=@{{ hostvars[host].inventory_hostname }}
   esp=aes128gcm16!
 {% endif %}
