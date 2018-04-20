@@ -6,7 +6,7 @@
 # ansible-playbook -i inventory playbooks/bootstrap.yml --ask-become-pass -b
 
 - hosts: all
-  gather_facts: False
+  gather_facts: True
   # strategy: debug
   become: true
   vars_files:

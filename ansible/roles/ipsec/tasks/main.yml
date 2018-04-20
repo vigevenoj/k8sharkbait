@@ -38,4 +38,4 @@
 - name: restart strongswan service
   service:
     name: strongswan
-    status: restarted
+    state: restarted
