@@ -43,6 +43,10 @@ cluster:
   domain: example.com
 ```
 With that in place, run `python up.py` to generate your cluster nodes and ansible inventory as specified. After that, you'll need to run the `minimal-bootstrap` playbook or specify the python3 interpreter in order to run the bootstrap playbook, which will get the cluster ready for you to deploy Heketi.  
+Note that the ansible playbook requires the controller to have the python 'netaddr' package installed.
+
+## Inter-node traffic encryption
+The ansible playbook configures certificate-based IPsec encapsulation of traffic between the nodes on their internal (private) addresses via the `ipsec` role. Certificates need to be generated ahead of time, and the chain of trust up to a root needs to be copied onto the nodes in addition to each node's certificate and key. There are some notes in the role with more details.
 
 ## Storage
 Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight; it has bugs and needs some human intervention. The internal tooling also generates the necessary topology.json required for Heketi to use the volumes for glusterfs.  
@@ -136,6 +140,15 @@ in no particular order
 * Other options
   * https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/ for at home
 * Linode Python API: https://github.com/linode/python-linode-api/tree/master/linode
+* IPsec configuration
+  * https://www.gypthecat.com/easyish-ipsec-vpn-with-shared-ecdsa-certificates-for-host-to-host-connections
+  * https://github.com/kravietz/ansible-ipsec
+  * https://github.com/rnurgaliyev/ansible-vpn-ikev2
+  * https://github.com/networklore/ansible-getting-started
+  * https://github.com/torian/ansible-role-strongswan
+  * https://ipsec.pl/ipsec/2016/securing-cloud-servers-ipsec-and-ansible.html
+  * https://github.com/jonathanio/ansible-role-strongswan
+  * strongSwan documentation at https://strongswan.org/
 
 ## Notes
 
