@@ -50,7 +50,7 @@ The ansible playbook configures certificate-based IPsec encapsulation of traffic
 
 ## Storage
 Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight; it has bugs and needs some human intervention. The internal tooling also generates the necessary topology.json required for Heketi to use the volumes for glusterfs.  
-Once the cluster is boostrapped and Kubernetes is running, the gk-deploy.sh script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi) must be deployed onto a node in the cluster so that they can be run from there. Running gk-deploy.sh from outside the cluster fails, see [gluster/gluseterkubernetes issue #161](https://github.com/gluster/gluster-kubernetes/issues/161) for details.  
+Once the cluster is boostrapped and Kubernetes is running, the gk-deploy.sh script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi) must be deployed onto a node in the cluster so that they can be run from there. Running gk-deploy.sh from outside the cluster fails, see [gluster/glusterkubernetes issue #161](https://github.com/gluster/gluster-kubernetes/issues/161) for details.  
 
 Once storage is online, create a StorageClass to fulfill prerequisite #3. [storageclass.yaml](storageclass.yaml) will work for this.
 
@@ -129,6 +129,7 @@ in no particular order
   * https://5pi.de/2016/11/20/15-producation-grade-kubernetes-cluster/
   * http://jeremievallee.com/2017/01/31/kubernetes-with-vagrant-ansible-kubeadm/
   * http://blog.jameskyle.org/2014/08/deploying-baremetal-kubernetes-cluster/
+  * https://kubernetes.io/docs/setup/independent/high-availability
 * Storage (specifically GlusterFS/Heketi)
   * https://github.com/gluster/gluster-kubernetes/tree/master/vagrant
   * https://github.com/heketi/heketi/wiki/Kubernetes-Integration
