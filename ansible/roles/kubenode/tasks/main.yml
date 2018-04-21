@@ -31,6 +31,21 @@
   tags:
     - kube_packages
 
+- name: Add kubelet extra args to service
+  # We're adding --fail-swap-on because we have swap
+  template:
+    src: kubelet.service.j2
+    dest: /etc/systemd/system/kubelet.service.d/90-local-extras.con
+    #  notify:
+    #-  Restart kubelet with config change
+
+- name: Update kubelet cluster domain
+  lineinfile:
+    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    regexp: "cluster-domain"
+    line: "Environment=\"KUBELET_DNS_ARGS=--cluster-dns=10.96.0.10 --cluster-domain={{ kubernetes_cluster_domain }}\""
+    state: present
+
 - name: Enable and start the kubelet service
   systemd:
     name: kubelet
@@ -39,6 +54,11 @@
     daemon_reload: yes
   tags:
     - kube
+
+- name: Ensure br_netfilter module is loaded
+  modprobe:
+    name: br_netfilter
+    state: present
 
 - name: Update kernel settings
   sysctl:
