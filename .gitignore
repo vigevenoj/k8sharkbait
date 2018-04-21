@@ -4,6 +4,7 @@ ansible/inventory
 ansible/files/*.pub
 ansible/playbooks/*.retry
 ansible/config.yml
+ansible/.cache
 # Certs and keys don't go in source control
 *.crt.pem
 *.key.pem
