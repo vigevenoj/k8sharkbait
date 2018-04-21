@@ -1,3 +1,4 @@
+# Ansible-managed file
 # /etc/systemd/system/etcd.service
 [Unit]
 Description=etcd
@@ -5,15 +6,21 @@ After=network.target
 
 [Service]
 Type=notify
-ExecStart=/opt/etcd/etcd --name etcd{{ inventory_hostname }} \
+ExecStart=/usr/bin/etcd --name {{ inventory_hostname }} \
   --data-dir /var/lib/etcd \
-  --listen-client-urls "http://{{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379,http://localhost:2379" \
-  --advertise-client-urls "http://{{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379" \
-  --listen-peer-urls "http://{{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2380" \
-  --initial-cluster "{% for host in hosts %} {{ hostvars[host].inventory_hostname }}=http://{{ hostvars[item].ansible_eth0.ipv4.address }}:2380,{% endfor %}" \
-  --initial-advertise-peer-urls "http://{{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2380" \
+  --listen-client-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379,https://localhost:2379" \
+  --advertise-client-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379" \
+  --listen-peer-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2380" \
+  --initial-cluster "{{ ansible_play_hosts | map ('extract',hostvars,'etcd_uri') | list | join(',') }}" \
+  --initial-advertise-peer-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2380" \
   --heartbeat-interval 200 \
-  --election-timeout 5000
+  --election-timeout 5000 \
+  --trusted-ca-file=/etc/ipsec.d/cacerts/intermediate.ca.crt.pem \
+  --cert-file=/etc/ipsec.d/certs/{{ inventory_hostname }}.crt.pem \
+  --key-file=/etc/ipsec.d/private/{{ inventory_hostname }}.key.pem \
+  --peer-client-cert-auth --peer-trusted-ca-file=/etc/ipsec.d/cacerts/intermediate.ca.crt.pem \
+  --peer-cert-file=/etc/ipsec.d/certs/{{ inventory_hostname }}.crt.pem \
+  --peer-key-file=/etc/ipsec.d/private/{{ inventory_hostname }}.key.pem
 Restart=always
 RestartSec=5
 TimeoutStartSec=0

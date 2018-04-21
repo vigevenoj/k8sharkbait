@@ -9,7 +9,6 @@
     - etcd
     - etcd_packages
 
-
 - name: Allow etcd traffic
   ufw:
     rule: allow
@@ -19,8 +18,13 @@
     - etcd
   notify: Enable ufw
 
+- name: Set etcd facts
+  set_fact:
+    etcd_uri: "{{ inventory_hostname }}=https://{{hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first}}:2380"
+
 - name: initial etcd configuration
   template:
     src: etcd.service.j2
     dest: /etc/systemd/system/etcd.service
-  notify: restart etcd
+  notify:
+    - restart etcd with config change 
