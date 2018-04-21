@@ -18,6 +18,7 @@
     - etcd
   notify: Enable ufw
 
+# The `etcd_uri` fact is used in the etcd.service.j2 template
 - name: Set etcd facts
   set_fact:
     etcd_uri: "{{ inventory_hostname }}=https://{{hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first}}:2380"
