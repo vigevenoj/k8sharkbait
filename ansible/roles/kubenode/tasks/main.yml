@@ -35,7 +35,7 @@
   # We're adding --fail-swap-on because we have swap
   template:
     src: kubelet.service.j2
-    dest: /etc/systemd/system/kubelet.service.d/90-local-extras.con
+    dest: /etc/systemd/system/kubelet.service.d/90-local-extras.conf
     #  notify:
     #-  Restart kubelet with config change
 
@@ -46,6 +46,7 @@
     line: "Environment=\"KUBELET_DNS_ARGS=--cluster-dns=10.96.0.10 --cluster-domain={{ kubernetes_cluster_domain }}\""
     state: present
 
+# Not sure this is needed because we do it again later
 - name: Enable and start the kubelet service
   systemd:
     name: kubelet

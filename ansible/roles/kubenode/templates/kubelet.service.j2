@@ -1,1 +1,1 @@
-Environment="KUBELET_EXTRA_ARGS=--fail-swap-on=false"
+Environment="KUBELET_EXTRA_ARGS=--fail-swap-on=false --node-ip={{hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first}}"

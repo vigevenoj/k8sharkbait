@@ -13,6 +13,7 @@
   roles:
     - {role: kubeadm-master, tags: ['kubeadm_master'] }
 
+
 # Run tasks for worker nodes
 - hosts: kubeadm-clients
   gather_facts: false
@@ -20,7 +21,5 @@
   vars_files:
     - ./vars/external_vars.yml
 
-  tasks:
-    - name: do other stuff
-      debug:
-        msg: "printing {{ hostvars[groups['kubenodes'][0]]['kubeadm_token'] }} on {{ inventory_hostname }}"
+  roles:
+    - {role: kube-worker, tags: ['kube_worker'] }

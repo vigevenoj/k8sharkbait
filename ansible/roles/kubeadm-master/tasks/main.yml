@@ -5,6 +5,10 @@
 # Etcd is using the same certificates as IPsec
 # All required configuration has been set up already
 # Kubelet is configured as we want and running (and crashlooping)
+- name: reset cluster
+  command: kubeadm reset
+  register: reset_cluster
+
 - name: generate a join token
   command: kubeadm token generate
   register: kubeadm_out
@@ -25,4 +29,51 @@
     owner: root
 
 - name: initialize the cluster
-  command: kubeadmin init --feature-gates=CoreDNS=true --config /tmp/master-configuration.yml
+  when: reset_cluster|succeeded
+  command: kubeadm init --feature-gates=CoreDNS=true --config /tmp/master-configuration.yml
+  register: cluster_initialized
+
+# Create ~/.kube/ and copy configuration file
+- name: Allow user access to kube/config
+  file:
+    path: /etc/kubernetes/admin.conf
+    mode: 0775
+
+- name: Create kubernetes config directory for user
+  become: false
+  file:
+    path: "~/.kube/"
+    state: directory
+
+- name: Copy admin config into user home drectory
+  when: cluster_initialized
+  become: false
+  copy:
+    src: "/etc/kubernetes/admin.conf"
+    dest: "~/.kube/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+    remote_src: True
+
+- name: Enable and restart kubelet
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+
+
+- name: Get kubectl version
+  shell: >
+    kubectl version | base64 | tr -d '\n'
+  register: kubectl_out
+
+- name: print kubectl version
+  debug:
+    msg: "{{ kubectl_out.stdout_lines[-1] }}"
+
+- name: Set kubectl version
+  set_fact:
+    kubectl_version: "{{ kubectl_out.stdout_lines[-1] }}"
+

@@ -1,0 +1,12 @@
+# Tasks for bringing up a worker node
+- name: Reset cluster
+  command: kubeadm reset
+  register: reset_cluster
+
+- name: print kubeadm token
+  debug:
+    msg: "printing {{ hostvars[groups['kubenodes'][0]]['kubeadm_token'] }} on {{ inventory_hostname }}"
+
+    #- name: join cluster
+    #  when: reset_cluster|succeeded
+    #  command: kubeadm join --token {{ hostvars[groups['kubenodes'][0]]['kubeadm_token'] }}

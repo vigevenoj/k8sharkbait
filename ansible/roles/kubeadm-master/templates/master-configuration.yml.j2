@@ -1,21 +1,21 @@
 apiVersion: kubeadm.k8s.io/v1alpha1
 kind: MasterConfiguration
 api:
-  advertiseAddress: {{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}
+  advertiseAddress: {{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}
 etcd:
   endpoints:
-  {% for host in groups['kubenodes'] %}
+{% for host in groups['kubenodes'] %}
     - https://{{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379
-  {% endfor %}
+{% endfor %}
   caFile: /etc/ipsec.d/cacerts/intermediate.ca.crt.pem
   certFile: /etc/ipsec.d/certs/{{ inventory_hostname }}.crt.pem
   keyFile: /etc/ipsec.d/private/{{ inventory_hostname }}.key.pem
 apiServerCertSANs:
   - {{ inventory_hostname }}
-  - {{ hostvars[host].ansible_all_ipv4_addresses | ipaddr('public') | first }}
-  {% for element in san_certificate_elements %}
+  - {{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('public') | first }}
+{% for element in san_certificate_elements %}
   - {{ element }}
-  {% endfor %}
+{% endfor %}
 networking:
   dnsDomain: robotghostpoop.local
 token: {{ kubeadm_token }}
