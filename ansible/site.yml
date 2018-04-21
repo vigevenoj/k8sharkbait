@@ -1,5 +1,6 @@
 ---
 # Top-level playbook to configure our cluster with the output of up.py
+# This replaces the "bootstrap" playbook
 # First run
 # ansible-playbook -i inventory playbooks/bootstrap.yml --user root --ask-pass
 # Second run
