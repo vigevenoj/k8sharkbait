@@ -1,0 +1,26 @@
+---
+# Run kubeadm as required on the installation
+# ansible-playbook -i inventory kubeadm.yml --ask-become-pass -b
+
+# Run tasks for master
+- hosts: kubenodes[0] # this is our master node
+  gather_facts: True
+  # strategy: debug
+  become: true
+  vars_files:
+    - ./vars/external_vars.yml # Has cluster service domain in it
+
+  roles:
+    - {role: kubeadm-master, tags: ['kubeadm_master'] }
+
+# Run tasks for worker nodes
+- hosts: kubeadm-clients
+  gather_facts: false
+  become: true
+  vars_files:
+    - ./vars/external_vars.yml
+
+  tasks:
+    - name: do other stuff
+      debug:
+        msg: "printing {{ hostvars[groups['kubenodes'][0]]['kubeadm_token'] }} on {{ inventory_hostname }}"

@@ -1,0 +1,28 @@
+# Tasks to bootstrap a kubernetes cluster via kubeadm
+# This role assumes that:
+# All nodes have certificate-based IPsec enabled between them
+# All nodes are etcd members
+# Etcd is using the same certificates as IPsec
+# All required configuration has been set up already
+# Kubelet is configured as we want and running (and crashlooping)
+- name: generate a join token
+  command: kubeadm token generate
+  register: kubeadm_out
+
+- name: print join token
+  debug:
+    msg: "{{ kubeadm_out.stdout_lines[-1] }}"
+
+- name: save join token to fact cache
+  set_fact:
+    kubeadm_token: "{{ kubeadm_out.stdout_lines[-1] }}"
+    cacheable: true
+    
+- name: deploy master configuration file
+  template:
+    src: master-configuration.yml.j2
+    dest: /tmp/master-configuration.yml
+    owner: root
+
+- name: initialize the cluster
+  command: kubeadmin init --feature-gates=CoreDNS=true --config /tmp/master-configuration.yml
