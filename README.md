@@ -149,6 +149,8 @@ in no particular order
   * https://ipsec.pl/ipsec/2016/securing-cloud-servers-ipsec-and-ansible.html
   * https://github.com/jonathanio/ansible-role-strongswan
   * strongSwan documentation at https://strongswan.org/
+* etcd
+  * https://stackoverflow.com/questions/44631245/how-to-run-etcd-cluster-in-docker-using-ansible#44632366
 
 ## Notes
 
