@@ -1,0 +1,21 @@
+#
+- hosts: kubenodes
+  gather_facts: true
+  become: true
+  
+  tasks:
+    - name: Reset kubeadm state
+      command: kubeadm reset
+
+    - name: Stop etcd service
+      systemd:
+        name: etcd
+        state: stopped
+
+    - name: Delete contents of etcd storage
+      file: /var/lib/etcd
+      state: absent
+
+    - name: Make new etcd storage directory
+      file: /var/lib/etcd
+      state: directory
