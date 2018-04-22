@@ -33,11 +33,10 @@
 
 - name: Add kubelet extra args to service
   # We're adding --fail-swap-on because we have swap
-  template:
-    src: kubelet.service.j2
-    dest: /etc/systemd/system/kubelet.service.d/90-local-extras.conf
-    #  notify:
-    #-  Restart kubelet with config change
+  lineinfile:
+    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    insertbefore: "^ExecStart=$"
+    line: "Environment=\"KUBELET_EXTRA_ARGS=--fail-swap-on=false --node-ip={{hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first}}\""
 
 - name: Update kubelet cluster domain
   lineinfile:
