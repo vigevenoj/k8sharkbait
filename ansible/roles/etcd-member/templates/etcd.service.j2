@@ -6,9 +6,9 @@ After=network.target
 
 [Service]
 Type=notify
-ExecStart=/usr/bin/etcd --name {{ inventory_hostname }} \
+ExecStart=/usr/local/bin/etcd --name {{ inventory_hostname }} \
   --data-dir /var/lib/etcd \
-  --listen-client-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379,https://localhost:2379" \
+  --listen-client-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379,https://localhost:2379,http://127.0.0.1:4001" \
   --advertise-client-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2379" \
   --listen-peer-urls "https://{{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first }}:2380" \
   --initial-cluster "{{ ansible_play_hosts | map ('extract',hostvars,'etcd_uri') | list | join(',') }}" \
@@ -25,6 +25,7 @@ Restart=always
 RestartSec=5
 TimeoutStartSec=0
 StartLimitInterval=0
+LimitNOFILE=40000
 
 [Install]
 WantedBy=multi-user.target

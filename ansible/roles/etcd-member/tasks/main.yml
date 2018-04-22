@@ -1,13 +1,45 @@
 # Tasks for configuring etcd members
-- name: Install etcd package
+- name: Uninstall system etcd package
   apt:
-    state: present
-    name: "{{ item }}"
-  with_items: "{{ etcd_packages }}"
-  tags:
-    - packages
+    state: absent
+    name: etcd
+
+- name: Install etcd from direct download
+  get_url:
+    # https://github.com/coreos/etcd/releases/download/v3.1.12/etcd-v3.1.12-linux-amd64.tar.gz
+    url: https://github.com/coreos/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz
+    dest: /tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz
+  register: downloaded_etcd
+
+- name: Extract etcd package
+  when: downloaded_etcd|succeeded
+  unarchive:
+    copy: no
+    src: /tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz
+    dest: /tmp
+  register: extracted_etcd
+
+- name: Move etcd and etcdctl to usr bin
+  when: extracted_etcd|succeeded
+  copy:
+    remote_src: true
+    src: "/tmp/etcd-{{ etcd_version }}-linux-amd64/{{ item }}"
+    dest: /usr/local/bin/
+    mode: 0755
+  with_items:
     - etcd
-    - etcd_packages
+    - etcdctl
+  register: deployed_etcd
+
+
+- name: Clean up downloaded etcd 
+  when: downloaded_etcd|succeeded and extracted_etcd|succeeded and deployed_etcd|succeeded
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - /tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz
+    - /tmp/etcd-{{ etcd_version }}-linux-amd64
 
 - name: Allow etcd traffic
   ufw:
