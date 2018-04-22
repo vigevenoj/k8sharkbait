@@ -7,6 +7,7 @@
   debug:
     msg: "printing {{ hostvars[groups['kubenodes'][0]]['kubeadm_token'] }} on {{ inventory_hostname }}"
 
-    #- name: join cluster
-    #  when: reset_cluster|succeeded
-    #  command: kubeadm join --token {{ hostvars[groups['kubenodes'][0]]['kubeadm_token'] }}
+- name: join cluster
+  when: reset_cluster|succeeded
+  command: kubeadm join --token {{ hostvars[groups['kubenodes'][0]]['kubeadm_token']  }}  --ignore-preflight-errors=swap --ignore-preflight-errors=CRI {{ hostvars[groups['kubeadm-masters'][0]].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first}}:6443 --discovery-token-unsafe-skip-ca-verification
+  register: joined_cluster
