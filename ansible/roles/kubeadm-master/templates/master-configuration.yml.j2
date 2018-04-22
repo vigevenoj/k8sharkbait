@@ -19,3 +19,5 @@ apiServerCertSANs:
 networking:
   dnsDomain: robotghostpoop.local
 token: {{ kubeadm_token }}
+featureGates:
+  CoreDNS: true
