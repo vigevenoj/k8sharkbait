@@ -1,0 +1,26 @@
+---
+# This playbook tears down and resets the heketi/glusterfs systems
+
+- hosts: kubenodes[0] # We have some stuff we have to run on a node
+  gather_facts: true
+  # become: true
+  # vars_files:
+  # - ./vars/external_vars.yml
+
+  tasks:
+    - name: Remove any heketi k8s objects
+      debug:
+        msg: "Remove heketi k8s objects"
+
+    - name: Remove glusterfs k8s objects
+      debug:
+        msg: "kubectl delete ds glusterfs"
+
+- hosts: kubenodes
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Wipe block volumes
+      debug:
+        msg: "Remove lvm volumes and reset /dev/sdc to an empty block device"
