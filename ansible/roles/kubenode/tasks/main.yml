@@ -55,10 +55,15 @@
   tags:
     - kube
 
-- name: Ensure br_netfilter module is loaded
+- name: Ensure kernel modules are loaded
   modprobe:
-    name: br_netfilter
+    name: "{{ item }}"
     state: present
+  with_items:
+    - br_netfilter 
+    - dm_snapshot # for glusterfs
+    - dm_mirror   # for glusterfs
+    - dm_thin_pool # for glusterfs
 
 - name: Update kernel settings
   sysctl:
