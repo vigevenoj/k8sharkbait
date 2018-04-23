@@ -8,13 +8,11 @@
   # - ./vars/external_vars.yml
 
   tasks:
-    - name: Remove any heketi k8s objects
-      debug:
-        msg: "Remove heketi k8s objects"
+    - name: Run gk-deploy in abort mode
+      command: ./gk-deploy --abort
+      args:
+        chdir: /tmp/gluster-kubernetes/deploy
 
-    - name: Remove glusterfs k8s objects
-      debug:
-        msg: "kubectl delete ds glusterfs"
 
 - hosts: kubenodes
   gather_facts: true
@@ -23,4 +21,4 @@
   tasks:
     - name: Wipe block volumes
       debug:
-        msg: "Remove lvm volumes and reset /dev/sdc to an empty block device"
+        msg: "Remove lvm volumes and reset /dev/sdc to an empty block device, run vgs and vgremove"
