@@ -8,6 +8,10 @@
     -  ./vars/external_vars.yml
 
   tasks:
+    - name: Label all nodes as glusterfs nodes
+      command: "kubectl label node {{ item }} storagenode=glusterfs"
+      loop: "{{ groups['kubenodes'] }}"
+
     - name: Download heketi-cli package
       get_url:
         # https://github.com/heketi/heketi/releases/download/v6.0.0/heketi-client-v6.0.0.linux.amd64.tar.gz
