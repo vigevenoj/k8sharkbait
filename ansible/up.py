@@ -260,9 +260,12 @@ class ClusterGenerator():
             nodes.append(self.generate_storage_node_configuration(vm))
         clusters.append({"nodes": nodes})
         topology = {"clusters": [clusters]}
-        # TODO write this to a file so we can upload it to a node to be used
-        # for when we run the gk-deploy script later
         print(json.dump(topology))
+        # We write this to a file so we can upload it to a node and use it in
+        # the gk-deploy script. See storage.yml for details.
+        f = open("files/topology.json", "w")
+        f.write(json.dump(topology))
+        f.close()
 
     def generate_storage_node_configuration(self, vm):
         entry = {"node": {
