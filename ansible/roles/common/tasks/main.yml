@@ -190,6 +190,11 @@
     rule: allow
     port: 2379:2380
     proto: tcp
+    src: '{{ item }}'
+  with_items:
+    - 10.0.0.0/8
+    - 172.16.0.0./12
+    - 192.168.0.0/16
   tags:
     - kube
     - etcd
