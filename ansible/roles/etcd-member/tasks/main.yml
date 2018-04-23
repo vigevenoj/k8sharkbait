@@ -32,7 +32,7 @@
   register: deployed_etcd
 
 
-- name: Clean up downloaded etcd 
+- name: Clean up downloaded etcd
   when: downloaded_etcd|succeeded and extracted_etcd|succeeded and deployed_etcd|succeeded
   file:
     state: absent

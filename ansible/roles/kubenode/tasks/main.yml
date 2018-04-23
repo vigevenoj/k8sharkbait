@@ -60,7 +60,7 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - br_netfilter 
+    - br_netfilter
     - dm_snapshot # for glusterfs
     - dm_mirror   # for glusterfs
     - dm_thin_pool # for glusterfs
