@@ -57,7 +57,7 @@ Note that the playbooks require the controller (local machine) to have the pytho
 The ansible playbook configures certificate-based IPsec encapsulation of traffic between the nodes on their internal (private) addresses via the `ipsec` role. Certificates need to be generated ahead of time, and the chain of trust up to a root needs to be copied onto the nodes in addition to each node's certificate and key. There are some notes in the role with more details.
 
 ## Storage
-Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight; it has bugs and needs some human intervention. The internal tooling also generates the necessary topology.json required for Heketi to use the volumes for glusterfs.  
+Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight. It generates the necessary topology.json required for Heketi to use the volumes for glusterfs.  
 Once the cluster is boostrapped and Kubernetes is running, the `storage` playbook runs the gk-deploy script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi). 
 
 Once storage is online, create a StorageClass to fulfill prerequisite #3. [storageclass.yaml](storageclass.yaml) will work for this, but requires the IP address of the Heketi service from kubernetes
