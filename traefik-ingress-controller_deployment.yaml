@@ -47,11 +47,7 @@ spec:
         # Traefik's Let's Encrypt configuration requires an API key for our
         # DNS provider. See the sample toml for additional details
         # kubectl create secret generic -n kube-system linode --from-literal="linode api key"
-          - name: LINODE_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: linode
-                key: apiKey
+        # but we are using the http-01 challenge so DNS does not matter
         ports:
         - name: http
           containerPort: 80

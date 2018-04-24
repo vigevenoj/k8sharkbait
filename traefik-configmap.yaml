@@ -35,14 +35,16 @@ data:
     email = "vigevenoj@gmail.com"
     # /etc/traefik/ is backed by a persistent volume (see the deployment spec)
     storage = "/etc/traefik/acme.json"
-    #dnsProvider = "linode"
-    entryPoint = "https"
     acmeLogging = true
     onDemand = false
     onHostRule = true
     # staging server for test deployments
     #caServer = "https://acme-staging.api.letsencrypt.org/directory"
     caServer = "https://acme-v01.api.letsencrypt.org/directory"
+    entryPoint = "https"
+      [acme.httpChallenge]
+      entryPoint = "http"
+
     [[acme.domains]]
     main = "xn--9q8h2cq1m.ws"
     [[acme.domains]]
