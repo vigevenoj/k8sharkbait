@@ -138,6 +138,7 @@ in no particular order
   * http://jeremievallee.com/2017/01/31/kubernetes-with-vagrant-ansible-kubeadm/
   * http://blog.jameskyle.org/2014/08/deploying-baremetal-kubernetes-cluster/
   * https://kubernetes.io/docs/setup/independent/high-availability
+  * http://michele.sciabarra.com/2018/02/12/devops/Kubernetes-with-KubeAdm-Ansible-Vagrant/
 * Storage (specifically GlusterFS/Heketi)
   * https://github.com/gluster/gluster-kubernetes/tree/master/vagrant
   * https://github.com/heketi/heketi/wiki/Kubernetes-Integration
