@@ -11,14 +11,14 @@ metadata:
   name: traefik-role
 rules:
 - apiGroups: [""]
-  resources: ["services", "endpoints"]
+  resources: 
+    - "services"
+    - "endpoints"
+    - "secrets"
   verbs:
     - get
     - watch
     - list
-    - proxy
-    - use
-    - redirect
 - apiGroups:
     - "extensions"
   resources:
@@ -27,9 +27,6 @@ rules:
     - get
     - watch
     - list
-    - proxy
-    - use
-    - redirect
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1

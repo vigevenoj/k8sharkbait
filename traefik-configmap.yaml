@@ -30,10 +30,7 @@ data:
     [metrics]
       [metrics.statistics]
       recentErrors = 50
-      [metrics.influxdb]
-      address = "icy-influxdb.cluster.local:8086"
-      pushinterval = "60s"
-
+      
     [acme]
     email = "vigevenoj@gmail.com"
     # /etc/traefik/ is backed by a persistent volume (see the deployment spec)
