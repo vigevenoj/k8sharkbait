@@ -8,4 +8,4 @@ parameters:
   # It is the IP of the heketi service's endpoint.
   # Alternatively, kube-dns should resolve this correctly
   #resturl: "http://heketi.default.svc.cluster.local:8080"
-  resturl: "http://:8080"
+  resturl: "http://10.44.0.1:8080"
