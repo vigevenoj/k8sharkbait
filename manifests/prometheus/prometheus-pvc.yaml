@@ -1,0 +1,30 @@
+# Persistant Volume Claims for prometheus and alertmanager
+#
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prometheus-claim
+  namespace: default
+  annotations:
+    volume.beta.kubernetes.io/storage-class: glusterfs-storage
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: alertmanager-claim
+  namespace: default
+  annotations:
+    volume.beta.kubernetes.io/storage-class: glusterfs-storage
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
