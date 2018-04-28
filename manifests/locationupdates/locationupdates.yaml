@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
       - name: owntracks2db
-        # This image is private and has been pre-pushed to the nodes
-        image: owntracks2db
-        imagePullPolicy: Never
+        # This image was previously private but is available publicly now
+        image: vigevenoj/owntracks2db
+        imagePullPolicy: IfNotPresent
         ports:
           - name: monitoring
             containerPort: 8000
