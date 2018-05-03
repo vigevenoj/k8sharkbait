@@ -1,21 +1,23 @@
 # What is this?
 
-Single-sentence description? Start a kubernetes cluster with a dedicated certificate-auth enabled etcd cluster, IPsec between nodes, and glusterfs on Linode by running a couple scripts. That's the preflight for this project, which is probably more interesting to people than what I'm running on the end result.
+Single-sentence description? Start a kubernetes cluster with a dedicated certificate-auth enabled etcd cluster, IPsec between nodes, and glusterfs on Linode by running a python script and a few ansible playbooks. That is probably more interesting to people than what I'm running on the end result.
 
-This project contains configuration to run several applications using kubernetes, and to access them from the web.
+The ansible directory contains the `up.py` script and playbooks used to bootstrap the environment.
+
+This manifests directory contains configuration to run several applications using kubernetes, and to access them from the web.
 The applications are:
-1. Single-serving site "whatcolorischristinashair.com"
+1. Single-serving site "whatcolorischristinashair.com", the original purpose for this whole idea
 2. [Mosquitto](https://mosquitto.org) MQTT broker
-3. https://github.com/vigevenoj/owntracks-to-db
+3. [owntracks2db](https://github.com/vigevenoj/owntracks-to-db), for storing [Owntracks](owntracks.org) location updates into a database
+
 
 # Prerequisites
-1. Admin access to a kubernetes cluster
-2. The [Helm](https://helm.sh/) package manager for Kubernetes
-  * `helm init`
-3. A deployed StorageClass that can be used to create persistent volume claims.
 
-If you don't have access to these prerequisites, the Preflight section has instructions on how to get a cluster bootstrapped on Linode.
-
+Really, all you need are
+1. A Linode API token
+2. A computer with python 3 and ansible
+3. A private certificate authority, or the ability to generate some certificates
+since the preflight will give you 
 
 # Preflight
 
@@ -44,6 +46,9 @@ cluster:
   domain: example.com
 ```
 With your config in place, run `python up.py` to generate your cluster nodes and ansible inventory as specified.
+
+Next, you need use a certificate authority to generate certificates (and keys...) for each member of the cluster. Add those to ansible/roles/ipsec/files, along with the certificate of the certificate authority that signed them. I'm glossing over this step because I run a CA for personal projects, but you can use something like https://github.com/radiac/caman to do this step.
+
 Now run the playbooks:
 1. playbooks/minimal-bootstrap.yml: This must be run once, prior to any other playbooks, in order to ensure that every host has a unique machine id
 1. site.yml: This configures a baseline for each host, configures certificate-base IPsec transport between cluster members, builds an etcd cluster with certificate authentication on three hosts, and configures kubelet on the hosts which will be kubernetes nodes.
@@ -53,17 +58,30 @@ Now run the playbooks:
 
 Note that the playbooks require the controller (local machine) to have the python 'netaddr' package installed.
 
-## Inter-node traffic encryption
+### Inter-node traffic encryption
 The ansible playbook configures certificate-based IPsec encapsulation of traffic between the nodes on their internal (private) addresses via the `ipsec` role. Certificates need to be generated ahead of time, and the chain of trust up to a root needs to be copied onto the nodes in addition to each node's certificate and key. There are some notes in the role with more details.
 
-## Storage
+### Storage
 Persistent storage is managed via 20gb volumes attached to nodes as unformatted block devices. This is handled via some internal tooling during the preflight. It generates the necessary topology.json required for Heketi to use the volumes for glusterfs.  
 Once the cluster is boostrapped and Kubernetes is running, the `storage` playbook runs the gk-deploy script from [gluster-kubernetes](https://github.com/gluster/gluster-kubernetes) and heketi-cli from [Heketi](https://github.com/heketi/heketi). 
 
 Once storage is online, create a StorageClass to fulfill prerequisite #3. [storageclass.yaml](storageclass.yaml) will work for this, but requires the IP address of the Heketi service from kubernetes
 
 
-# Deployment
+### Status Check
+* minimal-bootstrap.yml playbook: after running this, the /etc/machine-id should be different from the other nodes
+* site.yml
+  * All nodes will have certificate-based IPsec transport between them
+  * All nodes have etcd installed and configured to use the same certificates as IPsec traffic
+  * The etcd cluster has been established
+  * All nodes are ready for kubeadm
+* kubeadm.yml
+  * First node is configured as kubernetes master
+  * Remaining nodes are configured as kubernetes workers
+  * Kubernetes cluster is up and running
+* storage.yml: heketi bootstraps glusterfs cluster on block storage devices
+
+# Service and Application Deployment
 ## Deploy postgresql with helm:
 
    `helm install --name basic-database stable/postgresql`
@@ -83,28 +101,7 @@ Once storage is online, create a StorageClass to fulfill prerequisite #3. [stora
 ## Deploy Traefik ui service
 
    `kubectl apply -f traefik-ui_service.yaml`  
-## Deploy kanboard. 
-
-   Our deployment uses a secret mounted in a volume for configuration to connect to the database
-
-   `kubectl apply -f kanboard-config-secret.yaml`  
-   `kubectl apply -f kanboard.yaml`  
-## Configure an ingress through Traefik to Kanboard:
-
-   `kubectl apply -f kanboard-ingress.yaml`
-## Configure Huginn
-
-   We use the [single-process](https://github.com/cantino/huginn/tree/master/docker/single-process) docker image and configuration but pass in additional configuration as environment variables to specify the local postgresql database.  
-   `kubectl apply -f huginn-threaded-deployment.yaml`  
-   `kubectl apply -f huginn-web-deployment.yaml`  
-## Configure an ingress through Traefik to Huginn:
-
-   `kubectl apply -f huginn-web-ingress.yaml`  
-
-At this point Kanboard, Huginn's web interface, and Huginn's background task processing should be running in the cluster, and the web interfaces for Kanboard and Huginn should be available at the urls specified in the ingress configurations.
-
-For a Minikube setup, use `huginn.local.ingress.yaml` and point 'hugs.sharkbaitextraordinaire.local' to the minikube IP address
-
+ 
 ## Deploy whatcolorischristinashair
 
    This is both a joke and the reason that this project exists. For additional details, see [whatcolorischristinashair](https://github.com/vigevenoj/whatcolorischristinashair). The deployment and service are managed via haircolor.yaml and a Traefik ingress is managed via haircolor-ingress.yaml  
@@ -124,10 +121,6 @@ For a Minikube setup, use `huginn.local.ingress.yaml` and point 'hugs.sharkbaite
 # Future work
 in no particular order
 * Add inbound/outbound SMTP
-* influxdb (spinning this up is underway; see the monitoring directory for helm chart values and volume claims)
-* grafana (probably unneeded if a full TICK stack is used)
-* secure configuration parameters
-* prometheus/alertmanager or another monitoring and metrics stack (see note above about influxdb)
 * mqtt (see mosquitto.yaml for this. It does not have an ingress)
 * owntracks (owntracks2db pod works and is persisting data, see locationupdates.yaml)
 
