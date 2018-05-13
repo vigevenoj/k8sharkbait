@@ -1,9 +1,12 @@
 ---
+# This is a valid, but empty, configuration for the owntracks2db application
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: owntracks2db-blank-config
   namespace: default
+  labels:
+    app: owntracks2db
 data:
   config.yaml: |
     # config.yaml

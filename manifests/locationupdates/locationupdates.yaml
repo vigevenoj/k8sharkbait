@@ -16,9 +16,10 @@ spec:
       containers:
       - name: owntracks2db
         # This image was previously private but is available publicly now
-        image: vigevenoj/owntracks2db
+        image: vigevenoj/owntracks-to-db
         imagePullPolicy: IfNotPresent
         ports:
+          # We expose a port for prometheus to scrape
           - name: monitoring
             containerPort: 8000
         volumeMounts:
@@ -33,60 +34,61 @@ spec:
           - name: OWNTRACKS2DB_MQTT_HOST
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-mqtt-host 
           - name: OWNTRACKS2DB_MQTT_PORT
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-mqtt-port
           - name: OWNTRACKS2DB_MQTT_SSL
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-mqtt-ssl
           - name: OWNTRACKS2DB_MQTT_CA
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-mqtt-ca
           - name: OWNTRACKS2DB_MQTT_USERNAME
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-mqtt-username
           - name: OWNTRACKS2DB_MQTT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-mqtt-password
           - name: OWNTRACKS2DB_DB_HOST
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-db-host
           - name: OWNTRACKS2DB_DB_PORT
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-db-port
           - name: OWNTRACKS2DB_DB_USERNAME
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-db-username
           - name: OWNTRACKS2DB_DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-db-password
           - name: OWNTRACKS2DB_DB_NAME
             valueFrom:
               secretKeyRef:
-                name: locationupdates-configuration
+                name: owntracks2db-configuration
                 key: owntracks2db-db-name
       volumes:
         # Mount certificate from secret
+        # kubectl create secret generic locationupdates-ca-certificate --from-file=mqtt_ca.crt=/path/to/mqtt_ca.crt
         - name: ca-certificate
           secret:
             secretName: locationupdates-ca-certificate
@@ -94,6 +96,9 @@ spec:
               - key: mqtt_ca.crt
                 path: ca.crt
         # Mount a configuration file from a ConfigMap
+        # We use a ConfigMap containing a valid-but-empty yaml configuration file
+        # See owntracks2db-blank-config.yaml and the example Secret below
+        # This is a base for the secret configuration to be overlaid onto
         - name: owntracks2db-config
           configMap:
             name: owntracks2db-blank-config
@@ -103,12 +108,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: owntracks2db
+  labels:
+    app: owntracks2db
 spec:
   ports:
+    # We expose a port for prometheus to scrape
   - name: monitoring
     port: 8000
   selector:
     app: owntracks2db
+
 
 # This is an example of the secret required for this deployment:
 #---
