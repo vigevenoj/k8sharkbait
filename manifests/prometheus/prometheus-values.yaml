@@ -43,11 +43,11 @@ alertmanager:
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
-  prefixURL: ""
+  prefixURL: "/alertmanager"
 
   ## External URL which can access alertmanager
   ## Maybe same with Ingress host name
-  baseURL: "/"
+  baseURL: "https://monitoring.xn--9qh82cq1m.ws/alertmanager"
 
   ## Additional alertmanager container environment variable
   ## For instance to add a http_proxy
@@ -417,11 +417,11 @@ server:
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
-  prefixURL: ""
+  prefixURL: "/prometheus"
 
   ## External URL which can access alertmanager
   ## Maybe same with Ingress host name
-  baseURL: ""
+  baseURL: "https://monitoring.xn--9q8h2cq1m.ws/prometheus"
 
   ## Additional Prometheus server container arguments
   ##
