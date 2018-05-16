@@ -1,0 +1,15 @@
+# This is a persistent volume claim for grafana
+# It will contain data for all of our databases
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: grafana-persistent-storage
+  namespace: default
+  annotations:
+    volume.beta.kubernetes.io/storage-class: glusterfs-heketi-storage
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
