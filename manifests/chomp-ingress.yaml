@@ -2,13 +2,10 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: chompy-tick-ingress
+  name: chompy-ingress
   annotations:
     # Use traefik to serve this ingress
     kubernetes.io/ingress.class: "traefik"
-    # Configure basic auth
-    ingress.kubernetes.io/auth-type: basic
-    ingress.kubernetes.io/auth-secret: chompy-tick-basic-auth
 spec:
   rules:
   - host: chomp.xn--9q8h2cq1m.ws
@@ -16,5 +13,29 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: chompy-chronograf
+          serviceName: chompy-grafana
+          servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  annotations:
+    # Use traefik to serve this ingress
+    kubernetes.io/ingress.class: "traefik"
+    # Configure basic auth
+    ingress.kubernetes.io/auth-type: basic
+    ingress.kubernetes.io/auth-secret: chompy-basic-auth
+spec:
+  rules:
+  - host: monitoring.xn--9q8h2cq1m.ws
+    http:
+      paths:
+      - path: /prometheus
+        backend:
+          serviceName: orbiting-condor-prometheus-server
+          servicePort: 80
+      - path: /alertmanager
+        backend:
+          serviceName: orbiting-condor-prometheus-alertmanager
           servicePort: 80
