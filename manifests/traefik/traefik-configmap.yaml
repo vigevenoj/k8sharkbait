@@ -17,12 +17,11 @@ data:
       [entryPoints.https.tls]
       # Add a dashboard and API endpoint
       [entryPoints.dashboard]
-      address = ":8080"
-      [entryPoints.api]
+      # This port is used in the deployment
       address = ":8081"
 
     [api]
-    entryPoint = "api"
+    entryPoint = "dashboard"
     dashboard = true
     [api.statistics]
     recentErrors = 10
@@ -30,6 +29,9 @@ data:
     [metrics]
       [metrics.statistics]
       recentErrors = 50
+      [metrics.prometheus]
+      entryPoint = "dashboard"
+      buckets = [0.1,0.3,1.2,5.0]
       
     [acme]
     email = "vigevenoj@gmail.com"
