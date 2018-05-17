@@ -12,10 +12,7 @@ spec:
     matchLabels:
       k8s-app: traefik-ingress-lb
   strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
+    type: Recreate
   template:
     metadata:
       labels:
@@ -56,6 +53,7 @@ spec:
           containerPort: 443
           hostPort: 443
         - name: admin
+          # This matches the "dashboard" entrypoint in traefik-cfg (traefik-configmap.yaml)
           containerPort: 8081
           hostPort: 8081
         resources:
