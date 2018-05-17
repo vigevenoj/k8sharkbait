@@ -110,6 +110,10 @@ metadata:
   name: owntracks2db
   labels:
     app: owntracks2db
+  annotations:
+    prometheus.io.scrape: 'true'
+    prometheus.io.port: '8000'
+    prometheus.io.path: /
 spec:
   ports:
     # We expose a port for prometheus to scrape
