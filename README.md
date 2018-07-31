@@ -164,6 +164,7 @@ in no particular order
 # Troubleshooting
 
 ## Copying data from a gluster-backed volume
+ * Translate PVC and PV to the Heketi volume name by cutting off the first four characters of the output of `kubectl get pv $(kubectl get pvc pvcname -o jsonpath='{.spec.volumeName}{"\n"}') -o jsonpath='{.spec.glusterfs.path}{"\n"}'`
  * Use the `heketi-cli` API or `gluster` command (via `kubectl exec` on a glusterfs pod) to determine name of the brick where the data resides and which host that brick is on.
  * On the host where the brick is located, use `lvdisplay` to find the path of the LV where the brick is
  * Mount the device from the LV Path of `lvdisplay` somewhere, eg, /mount/mybrick
