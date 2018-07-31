@@ -4,6 +4,9 @@ kind: Service
 metadata:
   name: traefik-web-ui
   namespace: kube-system
+  annotations:
+    prometheus.io.scrape: 'true'
+    prometheus.io.port: '80'
 spec:
   selector:
     k8s-app: traefik-ingress-lb
