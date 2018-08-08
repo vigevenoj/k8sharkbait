@@ -17,7 +17,7 @@ Really, all you need are
 1. A Linode API token
 2. A computer with python 3 and ansible
 3. A private certificate authority, or the ability to generate some certificates
-since the preflight will give you 
+since the preflight will give you virtual machines to run it on
 
 # Preflight
 
@@ -48,6 +48,8 @@ cluster:
 With your config in place, run `python up.py` to generate your cluster nodes and ansible inventory as specified.
 
 Next, you need use a certificate authority to generate certificates (and keys...) for each member of the cluster. Add those to ansible/roles/ipsec/files, along with the certificate of the certificate authority that signed them. I'm glossing over this step because I run a CA for personal projects, but you can use something like https://github.com/radiac/caman to do this step.
+
+# Cluster creation
 
 Now run the playbooks:
 1. playbooks/minimal-bootstrap.yml: This must be run once, prior to any other playbooks, in order to ensure that every host has a unique machine id
