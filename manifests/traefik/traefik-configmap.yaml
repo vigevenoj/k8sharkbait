@@ -42,7 +42,7 @@ data:
     onHostRule = true
     # staging server for test deployments
     #caServer = "https://acme-staging.api.letsencrypt.org/directory"
-    caServer = "https://acme-v01.api.letsencrypt.org/directory"
+    caServer = "https://acme-v02.api.letsencrypt.org/directory"
     entryPoint = "https"
       [acme.httpChallenge]
       entryPoint = "http"
