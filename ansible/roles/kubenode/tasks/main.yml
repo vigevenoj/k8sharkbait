@@ -31,19 +31,13 @@
   tags:
     - kube_packages
 
-- name: Add kubelet extra args to service
-  # We're adding --fail-swap-on because we have swap
-  lineinfile:
-    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    insertbefore: "^ExecStart=$"
-    line: "Environment=\"KUBELET_EXTRA_ARGS=--fail-swap-on=false --node-ip={{hostvars[inventory_hostname].ansible_all_ipv4_addresses | ipaddr('192.168.0.0/16') | first}}\""
-
-- name: Update kubelet cluster domain
-  lineinfile:
-    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    regexp: "cluster-domain"
-    line: "Environment=\"KUBELET_DNS_ARGS=--cluster-dns=10.96.0.10 --cluster-domain={{ kubernetes_cluster_domain }}\""
-    state: present
+- name: Add kubelet extra args to default file
+  template:
+    src: kubelet.j2
+    dest: /etc/default/kubelet
+    owner: root
+    group: root
+    mode: '0644'
 
 # Not sure this is needed because we do it again later
 - name: Enable and start the kubelet service

@@ -19,7 +19,7 @@
     key: "{{ item }}"
   with_items:
     - "{{ lookup('file', '../files/sbe.pub') }}"
-    - "{{ lookup('file', '../files/jlaptop.pub') }}"
+    - "{{ lookup('file', '../files/iphone.pub') }}"
   tags:
     - users
     - base
