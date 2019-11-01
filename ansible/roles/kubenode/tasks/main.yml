@@ -67,5 +67,16 @@
     state: present
     reload: yes
 
+- name: deploy containerd.conf
+  file:
+    src: containerd.conf
+    dest: /etc/modules-load.d/containerd.conf
+
+- name: set sysctls for cri
+  file:
+    src: 99-kubernetes-cri.conf
+    dest: /etc/sysctl.d/99-kubernetes-cri.conf
+  
+
 - name: Get crictl
   command: go get github.com/kubernetes-incubator/cri-tools/cmd/crictl creates=go/bin/crictl
