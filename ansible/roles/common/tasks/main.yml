@@ -135,7 +135,7 @@
   tags:
     - firewall
   notify: Enable ufw
-# This shoudl probably be moved to the ipsec member role
+# This should probably be moved to the ipsec member role
 - name: Allow ipsec esp traffic
   ufw:
     rule: allow
