@@ -149,7 +149,7 @@
 
   - name: Configure kubernetes repository
     apt_repository: 
-      repo: deb https://packages.cloud.google.com/apt/ kubernetes-xenial main
+      repo: deb https://packages.cloud.google.com/apt/ kubernetes-yakkety main
       state: present
     tags:
       - kube_packages
