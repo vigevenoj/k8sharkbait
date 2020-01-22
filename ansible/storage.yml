@@ -1,5 +1,6 @@
 # Playbook to configure persistent storage provider
 # ansible-playbook -i inventory storage.yml --ask-become-pass -b
+# note that you may need to wipe the storage first (see the teardown playbook for some details)
 
 - hosts: kubenodes[0] # Our master, but we really need any one host
   gather_facts: true
@@ -8,28 +9,28 @@
     -  ./vars/external_vars.yml
 
   tasks:
-    - name: Label all nodes as glusterfs nodes
-      command: "kubectl label node {{ item }} storagenode=glusterfs"
-      loop: "{{ groups['kubenodes'] }}"
+    #- name: Label all nodes as glusterfs nodes
+    #  command: "kubectl label node {{ item }} storagenode=glusterfs"
+    #  loop: "{{ groups['kubenodes'] }}"
 
     - name: Download heketi-cli package
       get_url:
-        # https://github.com/heketi/heketi/releases/download/v6.0.0/heketi-client-v6.0.0.linux.amd64.tar.gz
-        url: https://github.com/heketi/heketi/releases/download/v6.0.0/heketi-client-v6.0.0.linux.amd64.tar.gz
-        dest: /tmp/heketi-client-v6.0.0.linux.amd64.tar.gz
+        # https://github.com/heketi/heketi/releases/download/v9.0.0/heketi-client-v9.0.0.linux.amd64.tar.gz
+        url: https://github.com/heketi/heketi/releases/download/v9.0.0/heketi-client-v9.0.0.linux.amd64.tar.gz
+        dest: /tmp/heketi-client-v9.0.0.linux.amd64.tar.gz
       register: downloaded_heketi
 
     - name: Extract heketi
-      when: downloaded_heketi|succeeded
+      when: downloaded_heketi is succeeded
       unarchive:
         copy: no
-        src: /tmp/heketi-client-v6.0.0.linux.amd64.tar.gz
+        src: /tmp/heketi-client-v9.0.0.linux.amd64.tar.gz
         dest: /tmp
       register: extracted_heketi
 
     - name: Move heketi cli to usr local bin
       become: true
-      when: extracted_heketi|succeeded
+      when: extracted_heketi is succeeded
       copy:
         remote_src: true
         src: /tmp/heketi-client/bin/heketi-cli
@@ -38,12 +39,12 @@
       register: copied_heketi_cli
 
     - name: Clean up downloaded heketi
-      when: downloaded_heketi|succeeded and extracted_heketi|succeeded and copied_heketi_cli|succeeded
+      when: downloaded_heketi is succeeded and extracted_heketi is succeeded and copied_heketi_cli is succeeded
       file:
         state: absent
         path: "{{ item }}"
       with_items:
-        - /tmp/heketi-client-v6.0.0.linux.amd64.tar.gz
+        - /tmp/heketi-client-v9.0.0.linux.amd64.tar.gz
         - /tmp/heketi-client
 
     - name: Check out gluster-kubernetes code for k8s deployment
@@ -58,7 +59,8 @@
         dest: /tmp/gluster-kubernetes/deploy/topology.json
 
     - name: Run gk-deploy script
-      command: ./gk-deploy -g -v -c kubectl -n default -l ~/gkdeploy.log topology.json
+      # This requires the user to have a valid kube config
+      command: ./gk-deploy -g -v -c kubectl -n default -l ~/gkdeploy.log topology.json --admin_key {{ heketi_admin_key }} --user-key {{ heketi_user_key }}
       args:
         chdir: /tmp/gluster-kubernetes/deploy
 

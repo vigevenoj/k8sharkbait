@@ -9,7 +9,7 @@
 
   tasks:
     - name: Run gk-deploy in abort mode
-      command: ./gk-deploy --abort
+      command: ./gk-deploy --abort --admin-key {{ heketi_admin_key }} --user-key {{ heketi_user_key }}
       args:
         chdir: /tmp/gluster-kubernetes/deploy
 
@@ -21,4 +21,4 @@
   tasks:
     - name: Wipe block volumes
       debug:
-        msg: "Remove lvm volumes and reset /dev/sdc to an empty block device, run vgs and vgremove"
+        msg: "Remove lvm volumes and reset /dev/sdc to an empty block device, run vgs and vgremove each vg"
