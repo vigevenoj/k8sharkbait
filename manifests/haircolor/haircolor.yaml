@@ -1,10 +1,13 @@
 # See haircolor-ingress.yaml for additional notes
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: haircolor
 spec:
+  selector:
+    matchLabels:
+      app: whatcolorischristinashair
   replicas: 1
   template:
     metadata:

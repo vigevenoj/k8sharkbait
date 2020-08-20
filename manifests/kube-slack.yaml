@@ -27,12 +27,15 @@ subjects:
     name: kube-slack
     namespace: kube-system
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kube-slack
   namespace: kube-system
 spec:
+  selector:
+    matchLabels:
+      app: kube-slack
   replicas: 1
   revisionHistoryLimit: 3
   template:

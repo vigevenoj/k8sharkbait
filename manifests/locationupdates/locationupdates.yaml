@@ -2,11 +2,14 @@
 # https://github.com/vigevenoj/owntracks-to-db/tree/master/python
 # where the image has been pre-pushed to the cluster nodes
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: owntracks2db
 spec:
+  selector:
+    matchLabels:
+      app: owntracks2db
   replicas: 1
   template:
     metadata:

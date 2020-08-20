@@ -1,7 +1,7 @@
 # Configuration for Huginn workers.
 # This does not configure the Huginn web interface. For that, see the hugin-web configuration
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:

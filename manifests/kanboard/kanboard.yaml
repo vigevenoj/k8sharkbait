@@ -3,7 +3,7 @@
 #
 # See kanboard-ingress.yaml for ingress details
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -15,7 +15,7 @@ spec:
   selector:
     matchLabels:
       app: kanboard
-      version: v1.2.0
+      version: v1.2.13
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -30,7 +30,7 @@ spec:
       name: kanboard
     spec:
       containers:
-      - image: kanboard/kanboard:v1.2.0
+      - image: kanboard/kanboard:v1.2.13
         imagePullPolicy: IfNotPresent
         name: kanboard
         resources: {}

@@ -2,11 +2,14 @@
 # This requires a ConfigMap for mosquitto-config to exist
 # See mosquitto-configmap.blank.yaml for more details
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mosquitto
 spec:
+  selector:
+    matchLabels:
+      app: mosquitto
   # Only 1 replica because clustering mosquitto is out of scope for now
   replicas: 1
   template:
